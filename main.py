@@ -9,29 +9,26 @@ import sys
 import logging
 
 
-TITLE = 'Prenotazione evento'
-N_SEATS = 43
-
-
 def main(path: str = './prenotazioni.csv') -> None:
+
+    # streamlit secrets
+    parameters = st.secrets['parameters']
+    credentials = st.secrets['credentials']
 
     aisf_link = 'http://ai-sf.it/perugia/'
     repo_link = 'https://github.com/cavfiumella/prenotazione-evento'
     aisf_email = 'perugia@ai-sf.it'
 
-    st.set_page_config(page_title=TITLE, initial_sidebar_state='collapsed',
+    st.set_page_config(page_title=parameters['title'], initial_sidebar_state='collapsed',
                        menu_items={'About': f'[AISF Perugia]({aisf_link})',
                                    'Report a bug': os.path.join(repo_link, 'issues')
                                   }
                       )
 
-    st.title(TITLE)
-    st.markdown(' ')
-
 # admin login
 
     # init IAM
-    iam = helpers.IAM.IAM(st.secrets['credentials'])
+    iam = helpers.IAM.IAM(credentials)
     admin = False
 
     st.sidebar.header('Accedi')
@@ -47,11 +44,26 @@ def main(path: str = './prenotazioni.csv') -> None:
 
 # main page
 
+    st.title(parameters['title'])
+    st.markdown(' ')
+
+    st.subheader('Dettagli evento')
+    st.markdown(' ')
+
+    # event information
+    st.markdown(parameters['event'])
+    st.markdown(f'**Data**: {parameters["date"]}')
+    st.markdown(f'**Luogo**: {parameters["place"]}')
+    st.markdown(' ')
+
+    st.subheader('Prenotazione posto')
+    st.markdown(' ')
+
     if not admin:
 
         with st.form('main_form'):
 
-            answer = helpers.Answer.Answer(path, N_SEATS)
+            answer = helpers.Answer.Answer(path, parameters['seats'])
 
             col1, col2 = st.columns(2)
             with col1:
@@ -88,15 +100,16 @@ def main(path: str = './prenotazioni.csv') -> None:
                 else:
                     st.success('Prenotazione correttamente registrata')
 
+        st.markdown(' ')
+
         # footer
-
-        st.markdown(' ')
-        st.markdown(' ')
-
         st.subheader('Informazioni sulla pagina')
-        st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
-        st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
-        st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
+        st.markdown(' ')
+
+        with st.expander('Espandi'):
+            st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
+            st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
+            st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
 
     else: # user is admin
 
