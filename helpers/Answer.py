@@ -7,6 +7,7 @@ import os
 import random
 import string
 from typing import Union
+import hashlib
 
 
 class Answer:
@@ -36,6 +37,10 @@ class Answer:
 
     def _generate_id(self, length: int = 8) -> str:
         return ''.join(random.sample(string.ascii_letters + string.digits, k=length))
+
+
+    def _hash(self, s: str) -> str:
+        return hashlib.sha256(s.encode()).hexdigest()
 
 
     def get_available_seats(self) -> pd.Series:
@@ -95,7 +100,13 @@ class Answer:
         while id in df.index.tolist():
             id = self._generate_id()
 
-        df = df.append(pd.Series(self.get_dict(), name=id))
+        prenotation = self.get_dict()
+
+        for field in self._fields:
+            if field != 'seat':
+                prenotation[field] = self._hash(prenotation[field])
+
+        df = df.append(pd.Series(prenotation, name=id))
         df = df.sort_values('seat')
         df.to_csv(self._path)
 
