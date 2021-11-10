@@ -15,16 +15,24 @@ N_SEATS = 43
 
 def main(path: str = './prenotazioni.csv') -> None:
 
-    st.set_page_config(page_title=TITLE, initial_sidebar_state='collapsed')
+    aisf_link = 'http://ai-sf.it/perugia/'
+    repo_link = 'https://github.com/cavfiumella/prenotazione-evento'
+    aisf_email = 'perugia@ai-sf.it'
+
+    st.set_page_config(page_title=TITLE, initial_sidebar_state='collapsed',
+                       menu_items={'About': f'[AISF Perugia]({aisf_link})',
+                                   'Report a bug': os.path.join(repo_link, 'issues')
+                                  }
+                      )
 
     st.title(TITLE)
     st.markdown(' ')
 
+# admin login
+
     # init IAM
     iam = helpers.IAM.IAM(st.secrets['credentials'])
     admin = False
-
-    # admin login
 
     st.sidebar.header('Accedi')
     username = st.sidebar.text_input(label='Username', key='username_input')
@@ -37,7 +45,7 @@ def main(path: str = './prenotazioni.csv') -> None:
         if not admin:
             st.sidebar.error('Credenziali errate!')
 
-    # main page
+# main page
 
     if not admin:
 
@@ -79,6 +87,16 @@ def main(path: str = './prenotazioni.csv') -> None:
                         st.error('Il consenso al trattamento dei dati personali è obbligatorio')
                 else:
                     st.success('Prenotazione correttamente registrata')
+
+        # footer
+
+        st.markdown(' ')
+        st.markdown(' ')
+
+        st.subheader('Informazioni sulla pagina')
+        st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
+        st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
+        st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
 
     else: # user is admin
 
