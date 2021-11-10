@@ -1,4 +1,7 @@
 
+# Answer class to manage non-admin users registrations
+
+
 import pandas as pd
 import os
 import random
