@@ -120,13 +120,13 @@ def main(path: str = './prenotazioni.csv') -> None:
         if os.path.exists(path):
 
             # print prenotations
-            df = pd.read_csv(path)
+            df = pd.read_csv(path, index_col='id')
             st.dataframe(df)
 
             # convert df to csv
             @st.cache
             def get_csv(df: pd.DataFrame) -> str:
-                return df.to_csv(index=False).encode('utf-8')
+                return df.to_csv().encode('utf-8')
 
             # download df
 

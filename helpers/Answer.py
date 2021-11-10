@@ -1,6 +1,8 @@
 
 import pandas as pd
 import os
+import random
+import string
 from typing import Union
 
 
@@ -29,12 +31,16 @@ class Answer:
         self.phone = self.phone.replace(' ', '')
 
 
+    def _generate_id(self, length: int = 8) -> str:
+        return ''.join(random.sample(string.ascii_letters + string.digits, k=length))
+
+
     def get_available_seats(self) -> pd.Series:
 
         available_seats = pd.Series([True]*self._n_seats, index=pd.RangeIndex(1, self._n_seats+1))
 
         if os.path.exists(self._path):
-            for x in pd.read_csv(self._path).seat.values:
+            for x in pd.read_csv(self._path, index_col='id').seat.values:
                 available_seats.loc[x] = False
 
         return available_seats.loc[available_seats.values].index
@@ -78,12 +84,16 @@ class Answer:
             return field
 
         if os.path.exists(self._path):
-            df = pd.read_csv(self._path)
+            df = pd.read_csv(self._path, index_col='id')
         else:
-            df = pd.DataFrame(columns=self._fields)
+            df = pd.DataFrame(columns=self._fields, index=pd.Index([], name='id'))
 
-        df = df.append(self.get_dict(), ignore_index=True)
+        id = self._generate_id()
+        while id in df.index.tolist():
+            id = self._generate_id()
+
+        df = df.append(pd.Series(self.get_dict(), name=id))
         df = df.sort_values('seat')
-        df.to_csv(self._path, index=False)
+        df.to_csv(self._path)
 
 ### class Answer ###
