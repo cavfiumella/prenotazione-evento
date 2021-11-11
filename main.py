@@ -31,10 +31,11 @@ def main(path: str = './prenotazioni.csv') -> None:
                                   }
                       )
 
-# admin login
-
-    # init Admin
+    # init objects
     admin = helpers.Admin.Admin(credentials)
+    user = helpers.User.User(path, parameters['seats'])
+
+# admin login
 
     st.sidebar.header('Accedi')
     username = st.sidebar.text_input(label='Username', key='username_input')
@@ -80,7 +81,7 @@ def main(path: str = './prenotazioni.csv') -> None:
             if os.path.exists(path):
 
                 # print prenotations
-                df = pd.read_csv(path, index_col='id')
+                df = user.get_df()
                 st.dataframe(df)
 
                 # convert df to csv
@@ -110,8 +111,6 @@ def main(path: str = './prenotazioni.csv') -> None:
 
         # prenotation form
         with st.form('prenotation_form'):
-
-            user = helpers.User.User(path, parameters['seats'])
 
             col1, col2 = st.columns(2)
             with col1:

@@ -39,15 +39,15 @@ class User:
         return ''.join(random.sample(string.ascii_letters + string.digits, k=length))
 
 
-    def _get_df(self) -> pd.DataFrame:
+    def _set_time(self) -> None:
+        self.time = helpers_time.format(helpers_time.now())
+
+
+    def get_df(self) -> pd.DataFrame:
         if os.path.exists(self._path):
             return pd.read_csv(self._path, index_col='id')
         else:
             return pd.DataFrame(columns=self._fields, index=pd.Index([], name='id'))
-
-
-    def _set_time(self) -> None:
-        self.time = helpers_time.format(helpers_time.now())
 
 
     def get_available_seats(self) -> pd.Series:
@@ -55,7 +55,7 @@ class User:
         available_seats = pd.Series([True]*self._n_seats, index=pd.RangeIndex(1, self._n_seats+1))
 
         if os.path.exists(self._path):
-            for x in self._get_df().seat.values:
+            for x in self.get_df().seat.values:
                 available_seats.loc[x] = False
 
         return available_seats.loc[available_seats.values].index
@@ -95,7 +95,7 @@ class User:
         if type(field) == str:
             return field
 
-        df = self._get_df()
+        df = self.get_df()
 
         id = self._generate_id()
         while id in df.index.tolist():
