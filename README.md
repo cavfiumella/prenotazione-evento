@@ -40,7 +40,7 @@ Se non ci sono iscritti usare una lista vuota (i.e. `emails = []`).
 
 I segreti possono essere modificati anche dopo aver avviato l'app.
 
-Una volta distribuita l'app è accessibile al link `share.streamlit.io/username/reponame/main/main.py`
+Una volta attivata la pagina è accessibile al link `share.streamlit.io/username/reponame/main/main.py`
 dove `username` e `reponame` sono i nomi dell'utente proprietario della repository Github e della repository stessa.
 
 

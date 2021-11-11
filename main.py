@@ -52,8 +52,10 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.subheader('Prenotazione posto')
     st.markdown(' ')
 
+    # admin console
     if st.sidebar.button('Login', key='login_button'):
 
+        # wrong credentials
         if not admin.auth(username, password):
 
             # [BUG]
@@ -63,6 +65,7 @@ def main(path: str = './prenotazioni.csv') -> None:
             st.sidebar.error('Credenziali errate!')
             st.info('Ricarica la pagina per visualizzare la console di prenotazione')
 
+        # correct credentials
         else:
 
             # show logout button
@@ -97,10 +100,11 @@ def main(path: str = './prenotazioni.csv') -> None:
             else:
                 st.info('Non è stata registrata alcuna prenotazione ancora')
 
-    # non-admin user
+    # non-admin user console
     else:
 
-        with st.form('main_form'):
+        # prenotation form
+        with st.form('prenotation_form'):
 
             user = helpers.User.User(path, parameters['seats'])
 
@@ -160,7 +164,7 @@ def main(path: str = './prenotazioni.csv') -> None:
 
         st.markdown(' ')
 
-        # footer
+        # footer: page information
         st.subheader('Informazioni sulla pagina')
         st.markdown(' ')
 
