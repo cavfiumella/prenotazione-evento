@@ -44,7 +44,7 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.markdown(' ')
 
     # event information
-    st.markdown(parameters['event'])
+    st.markdown(parameters['description'])
     st.markdown(f'**Data**: {parameters["date"]}')
     st.markdown(f'**Luogo**: {parameters["place"]}')
     st.markdown(' ')
