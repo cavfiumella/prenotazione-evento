@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 import os
 import sys
+import traceback
 import logging
 
 
@@ -182,6 +183,6 @@ if __name__ == '__main__':
             main()
         else:
             main(path=sys.argv[1])
-    except Exception as ex:
-        logging.critical(f'{type(ex)}: {ex}')
+    except Exception:
+        logging.critical(traceback.format_exc())
         st.error('E\' stato riscontrato un error inaspettato. Provare a ricaricare la pagina. Ci scusiamo per il disagio.')
