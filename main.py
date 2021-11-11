@@ -35,12 +35,6 @@ def main(path: str = './prenotazioni.csv') -> None:
     admin = helpers.Admin.Admin(credentials)
     user = helpers.User.User(path, parameters['seats'])
 
-# admin login
-
-    st.sidebar.header('Accedi')
-    username = st.sidebar.text_input(label='Username', key='username_input')
-    password = st.sidebar.text_input(label='Password', type='password', key='password_input')
-
 # main page
 
     st.title(parameters['title'])
@@ -55,59 +49,61 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.markdown(f'**Luogo**: {parameters["place"]}')
     st.markdown(' ')
 
-    st.subheader('Prenotazione posto')
-    st.markdown(' ')
+    # admin login
+    is_admin = False
 
-    # admin console
-    if st.sidebar.button('Login', key='login_button'):
+    with st.form('admin_login', clear_on_submit=True):
+        with st.sidebar:
 
-        # wrong credentials
-        if not admin.auth(username, password):
+            st.header('Accedi')
+
+            # credentials
+            username = st.text_input(label='Username', key='username_input')
+            password = st.text_input(label='Password', type='password', key='password_input')
+
+            if st.form_submit_button('Login'):
+                if admin.auth(username, password):
+                    is_admin = True
+                else:
+                    st.error('Credenziali errate!')
+
+    # admin page
+    if is_admin:
+
+        # show prenotations
+        if os.path.exists(path):
+
+            # print prenotations
+            df = user.get_df()
+            st.dataframe(df)
+
+            # convert df to csv
+            @st.cache
+            def get_csv(df: pd.DataFrame) -> str:
+                return df.to_csv().encode('utf-8')
+
+            # download df
 
             # [BUG]
-            # Here prenotation form disappears.
-            # An informative message is displayed.
+            # pressing download button logout admin automatically.
+            # a form does not solve the problem because download buttons
+            # can not be used in forms
 
-            st.sidebar.error('Credenziali errate!')
-            st.info('Ricarica la pagina per visualizzare la console di prenotazione')
+            st.download_button(label='Download',
+                               data=get_csv(df),
+                               file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.csv',
+                               key='download_button'
+                              )
 
-        # correct credentials
+        # no prenotation to show
         else:
+            st.info('Non è stata registrata alcuna prenotazione ancora')
 
-            # show logout button
-            st.sidebar.button('Logout')
-
-            # show prenotations
-            if os.path.exists(path):
-
-                # print prenotations
-                df = user.get_df()
-                st.dataframe(df)
-
-                # convert df to csv
-                @st.cache
-                def get_csv(df: pd.DataFrame) -> str:
-                    return df.to_csv().encode('utf-8')
-
-                # download df
-
-                # [BUG]
-                # pressing download button logout admin automatically.
-                # a form does not solve the problem because download buttons
-                # can not be used in forms
-
-                st.download_button(label='Download',
-                                   data=get_csv(df),
-                                   file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.csv',
-                                   key='download_button'
-                                  )
-
-            # no prenotation to show
-            else:
-                st.info('Non è stata registrata alcuna prenotazione ancora')
-
-    # non-admin user console
+    # non-admin user page
     else:
+
+        st.subheader('Prenotazione posto')
+        st.markdown(' ')
 
         # prenotation form
         with st.form('prenotation_form'):
