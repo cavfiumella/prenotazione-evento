@@ -1,6 +1,6 @@
 
-import helpers.Answer
-import helpers.IAM
+import helpers.User
+import helpers.Admin
 
 import pandas as pd
 import streamlit as st
@@ -27,20 +27,13 @@ def main(path: str = './prenotazioni.csv') -> None:
 
 # admin login
 
-    # init IAM
-    iam = helpers.IAM.IAM(credentials)
+    # init Admin
+    admin = helpers.Admin.Admin(credentials)
     admin = False
 
     st.sidebar.header('Accedi')
     username = st.sidebar.text_input(label='Username', key='username_input')
     password = st.sidebar.text_input(label='Password', type='password', key='password_input')
-
-    # login button
-    if st.sidebar.button('Login', key='login_button'):
-        # check credentials
-        admin = iam.auth(username, password)
-        if not admin:
-            st.sidebar.error('Credenziali errate!')
 
 # main page
 
@@ -59,44 +52,89 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.subheader('Prenotazione posto')
     st.markdown(' ')
 
-    if not admin:
+    if st.sidebar.button('Login', key='login_button'):
+
+        if not admin.auth(username, password):
+            st.sidebar.error('Credenziali errate!')
+
+        else:
+
+            # show logout button
+            st.sidebar.button('Logout')
+
+            # show prenotations
+            if os.path.exists(path):
+
+                # print prenotations
+                df = pd.read_csv(path, index_col='id')
+                st.dataframe(df)
+
+                # convert df to csv
+                @st.cache
+                def get_csv(df: pd.DataFrame) -> str:
+                    return df.to_csv().encode('utf-8')
+
+                # download df
+
+                # [BUG]
+                # pressing download button logout admin automatically.
+                # a form does not solve the problem because download buttons
+                # can not be used in forms
+
+                st.download_button(label='Download',
+                                   data=get_csv(df),
+                                   file_name=f'{pd.Timestamp.utcnow().tz_convert("Europe/Rome").strftime("%Y-%m-%d_%H.%M.%S")}.csv',
+                                   key='download_button'
+                                  )
+
+            # no prenotation to show
+            else:
+                st.info('Non è stata registrata alcuna prenotazione ancora')
+
+    # non-admin user
+    else:
 
         with st.form('main_form'):
 
-            answer = helpers.Answer.Answer(path, parameters['seats'])
+            user = helpers.User.User(path, parameters['seats'])
 
             col1, col2 = st.columns(2)
             with col1:
-                answer.name = st.text_input(label='Nome', key='name_input')
+                user.name = st.text_input(label='Nome', key='name_input')
             with col2:
-                answer.surname = st.text_input(label='Cognome', key='surname_input')
+                user.surname = st.text_input(label='Cognome', key='surname_input')
 
             col1, col2 = st.columns(2)
             with col1:
-                answer.email = st.text_input(label='Email', key='email_input')
+                user.email = st.text_input(label='Email', key='email_input')
             with col2:
-                answer.phone = st.text_input(label='Numero di telefono', key='phone_input')
+                user.phone = st.text_input(label='Numero di telefono', key='phone_input')
 
-            answer.seat = st.selectbox(label='Posto', options=answer.get_available_seats(), key='seat_select')
-            answer.agree = st.checkbox(label='Consenso al trattamento dei dati')
+            user.seat = st.selectbox(label='Posto', options=user.get_available_seats(), key='seat_select')
+            user.agree = st.checkbox(label='Consenso al trattamento dei dati')
 
             if st.form_submit_button('Prenota'):
 
-                response = answer.save()
+                response = user.save()
 
-                if type(response) == str:
-                    # some field is not valid
-                    if response == 'name' or response == 'surname':
-                        st.error('Nome e cognome non sono validi')
-                    if response == 'email':
-                        st.error('Inserire un indirizzo email valido')
-                    if response == 'phone':
-                        st.error('Inserire un numero di telefono valido')
-                    if response == 'seat':
-                        st.error('Il posto scelto è già occupato')
-                        st.info('Ricarica la pagina per aggiornare la lista dei posti disponibile')
-                    if response == 'agree':
-                        st.error('Il consenso al trattamento dei dati personali è obbligatorio')
+                # save did not go well
+
+                if response == 'name' or response == 'surname':
+                    st.error('Nome e cognome non sono validi')
+
+                elif response == 'email':
+                    st.error('Inserire un indirizzo email valido')
+
+                elif response == 'phone':
+                    st.error('Inserire un numero di telefono valido')
+
+                elif response == 'seat':
+                    st.error('Il posto scelto è già occupato')
+                    st.info('Ricarica la pagina per aggiornare la lista dei posti disponibile')
+
+                elif response == 'agree':
+                    st.error('Il consenso al trattamento dei dati personali è obbligatorio')
+                # prenotation registered
                 else:
                     st.success('Prenotazione correttamente registrata')
 
@@ -110,40 +148,6 @@ def main(path: str = './prenotazioni.csv') -> None:
             st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
             st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
             st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
-
-    else: # user is admin
-
-        # show logout button
-        st.sidebar.button('Logout')
-
-        # show prenotations
-        if os.path.exists(path):
-
-            # print prenotations
-            df = pd.read_csv(path, index_col='id')
-            st.dataframe(df)
-
-            # convert df to csv
-            @st.cache
-            def get_csv(df: pd.DataFrame) -> str:
-                return df.to_csv().encode('utf-8')
-
-            # download df
-
-            # [BUG]
-            # pressing download button logout admin automatically.
-            # a form does not solve the problem because download buttons
-            # can not be used in forms
-
-            st.download_button(label='Download',
-                               data=get_csv(df),
-                               file_name=f'{pd.Timestamp.utcnow().tz_convert("Europe/Rome").strftime("%Y-%m-%d_%H.%M.%S")}.csv',
-                               key='download_button'
-                              )
-
-        # no prenotation to show
-        else:
-            st.info('Non è stata registrata alcuna prenotazione ancora')
 
 ### main ###
 

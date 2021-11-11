@@ -1,5 +1,5 @@
 
-# Answer class to manage non-admin users registrations
+# non-admin user operations
 
 
 import pandas as pd
@@ -10,7 +10,7 @@ from typing import Union
 import hashlib
 
 
-class Answer:
+class User:
 
     _path: str = None
     _n_seats: int = -1
@@ -43,12 +43,19 @@ class Answer:
         return hashlib.sha256(s.encode()).hexdigest()
 
 
+    def _get_df(self) -> pd.DataFrame:
+        if os.path.exists(self._path):
+            return pd.read_csv(self._path, index_col='id')
+        else:
+            return pd.DataFrame(columns=self._fields, index=pd.Index([], name='id'))
+
+
     def get_available_seats(self) -> pd.Series:
 
         available_seats = pd.Series([True]*self._n_seats, index=pd.RangeIndex(1, self._n_seats+1))
 
         if os.path.exists(self._path):
-            for x in pd.read_csv(self._path, index_col='id').seat.values:
+            for x in self._get_df().seat.values:
                 available_seats.loc[x] = False
 
         return available_seats.loc[available_seats.values].index
@@ -83,7 +90,7 @@ class Answer:
             return 'agree'
 
 
-    def save(self) -> Union[None,str]:
+    def save(self) -> str:
 
         self._remove_spaces()
         field = self.is_valid()
@@ -91,10 +98,7 @@ class Answer:
         if type(field) == str:
             return field
 
-        if os.path.exists(self._path):
-            df = pd.read_csv(self._path, index_col='id')
-        else:
-            df = pd.DataFrame(columns=self._fields, index=pd.Index([], name='id'))
+        df = self._get_df()
 
         id = self._generate_id()
         while id in df.index.tolist():
@@ -110,4 +114,6 @@ class Answer:
         df = df.sort_values('seat')
         df.to_csv(self._path)
 
-### class Answer ###
+        return id
+
+### class User ###

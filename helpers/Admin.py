@@ -1,12 +1,12 @@
 
-# Identity and Access Manager for admin access
+# admin users access manager
 
 
 import pandas as pd
 from typing import Union
 
 
-class IAM:
+class Admin:
 
     _credentials: pd.DataFrame = pd.DataFrame()
 
@@ -37,4 +37,4 @@ class IAM:
         # check password
         return password == self._credentials.loc[lambda x: x.username == username].password.values[0]
 
-### class IAM ###
+### class Admin ###
