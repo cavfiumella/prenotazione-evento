@@ -112,8 +112,6 @@ def main(path: str = './prenotazioni.csv') -> None:
             col1, col2 = st.columns(2)
             with col1:
                 user.email = st.text_input(label='Email', key='email_input')
-            with col2:
-                user.phone = st.text_input(label='Numero di telefono', key='phone_input')
 
             user.seat = st.selectbox(label='Posto', options=user.get_available_seats(), key='seat_select')
             user.agree = st.checkbox(label='Consenso al trattamento dei dati')
@@ -129,9 +127,6 @@ def main(path: str = './prenotazioni.csv') -> None:
 
                 elif response == 'email':
                     st.error('Inserire un indirizzo email valido')
-
-                elif response == 'phone':
-                    st.error('Inserire un numero di telefono valido')
 
                 elif response == 'seat':
                     st.error('Il posto scelto è già occupato')

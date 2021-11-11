@@ -14,12 +14,11 @@ class User:
 
     _path: str = None
     _n_seats: int = -1
-    _fields = ['seat', 'name', 'surname', 'email', 'phone']
+    _fields = ['seat', 'name', 'surname', 'email']
 
     name: str = 'None'
     surname: str = 'None'
     email: str = 'None'
-    phone: str = 'None'
     seat: int = -1
     agree: bool = False
 
@@ -32,7 +31,6 @@ class User:
     def _remove_spaces(self):
         self.name = self.name.strip()
         self.surname = self.surname.strip()
-        self.phone = self.phone.replace(' ', '')
 
 
     def _generate_id(self, length: int = 8) -> str:
@@ -79,9 +77,6 @@ class User:
 
         if ' ' in self.email or '@' not in self.email or '.' not in self.email.split('@')[-1]:
             return 'email'
-
-        if not self.phone.lstrip('+').isdigit():
-            return 'phone'
 
         if self.seat not in self.get_available_seats():
             return 'seat'
