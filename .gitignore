@@ -1,3 +1,6 @@
+# runtime files
+prenotazioni.csv
+
 # secrets
 .streamlit/secrets.toml
 
