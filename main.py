@@ -54,7 +54,13 @@ def main(path: str = './prenotazioni.csv') -> None:
     if st.sidebar.button('Login', key='login_button'):
 
         if not admin.auth(username, password):
+
+            # [BUG]
+            # Here prenotation form disappears.
+            # An informative message is displayed.
+
             st.sidebar.error('Credenziali errate!')
+            st.info('Ricarica la pagina per visualizzare la console di prenotazione')
 
         else:
 
