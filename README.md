@@ -46,8 +46,9 @@ dove `username` e `reponame` sono i nomi dell'utente proprietario della reposito
 
 ### Amministratori
 
-Gli amministratori, dopo aver fatto l'accesso nel menù in alto a sinistra,
-possono visualizzare e scaricare le prenotazioni espresse fino a quel momento.
+Gli amministratori, dopo essersi loggati nel menù in alto a sinistra,
+possono visualizzare e scaricare le prenotazioni espresse fino a quel momento e il logbook
+con le operazioni eseguite dagli amministratori di sistema.
 
 
 ## Link utili

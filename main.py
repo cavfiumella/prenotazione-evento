@@ -2,6 +2,7 @@
 import helpers.User
 import helpers.Admin
 import helpers.time
+import helpers.Logbook
 
 import pandas as pd
 import streamlit as st
@@ -34,6 +35,7 @@ def main(path: str = './prenotazioni.csv') -> None:
     # init objects
     admin = helpers.Admin.Admin(credentials)
     user = helpers.User.User(path, parameters['seats'])
+    logbook = helpers.Logbook.Logbook()
 
 # main page
 
@@ -64,40 +66,57 @@ def main(path: str = './prenotazioni.csv') -> None:
             if st.form_submit_button('Login'):
                 if admin.auth(username, password):
                     is_admin = True
+                    logbook.log(f'Admin "{username}" logged in')
                 else:
                     st.error('Credenziali errate!')
+                    logbook.log(f'Login attempt with wrong credentials:   username: "{username}", password: "{password}"')
 
     # admin page
     if is_admin:
 
-        # show prenotations
-        if os.path.exists(path):
+        st.subheader('Prenotazioni')
+        st.markdown(' ')
 
-            # print prenotations
-            df = user.get_df()
-            st.dataframe(df)
+        # print prenotations
+        df = user.get_df()
+        st.dataframe(df)
 
-            # convert df to csv
-            @st.cache
-            def get_csv(df: pd.DataFrame) -> str:
-                return df.to_csv().encode('utf-8')
+        # convert df to csv
+        @st.cache
+        def get_csv(df: pd.DataFrame) -> str:
+            return df.to_csv().encode('utf-8')
 
-            # download df
+        # [BUG]
+        # pressing download buttons logout admin automatically.
+        # a form does not solve the problem because download buttons
+        # can not be used in forms
 
-            # [BUG]
-            # pressing download button logout admin automatically.
-            # a form does not solve the problem because download buttons
-            # can not be used in forms
+        # download df
+        st.download_button(label='Scarica prenotazioni',
+                           data=get_csv(df),
+                           file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.csv',
+                           on_click=logbook.log,
+                           args=(f'Prenotations downloaded by admin "{username}"',),
+                           key='prenotations_download_button'
+                          )
 
-            st.download_button(label='Download',
-                               data=get_csv(df),
-                               file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.csv',
-                               key='download_button'
-                              )
+        st.markdown(' ')
 
-        # no prenotation to show
-        else:
-            st.info('Non è stata registrata alcuna prenotazione ancora')
+        st.subheader('Logbook')
+        st.markdown(' ')
+
+        # print logbook
+        logs = logbook.read()
+        st.text(logs)
+
+        # download logbook
+        st.download_button(label='Scarica logbook',
+                           data=logs,
+                           file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.log',
+                           on_click=logbook.log,
+                           args=(f'Logs downloaded by admin "{username}"',),
+                           key='logs_download_button'
+                          )
 
     # non-admin user page
     else:

@@ -1,5 +1,6 @@
 # runtime files
 prenotazioni.csv
+*.log
 
 # git
 **/.git*
