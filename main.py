@@ -18,9 +18,12 @@ def main(path: str = './prenotazioni.csv') -> None:
     credentials = st.secrets['credentials']
     members = st.secrets['members']['emails']
 
+    # links
     aisf_link = 'http://ai-sf.it/perugia/'
     repo_link = 'https://github.com/cavfiumella/prenotazione-evento'
     aisf_email = 'perugia@ai-sf.it'
+    aisf_policy = 'https://ai-sf.it/Informativa_Privacy_AISF.pdf'
+    streamlit_policy = 'https://streamlit.io/privacy-policy'
 
     st.set_page_config(page_title=parameters['title'], initial_sidebar_state='collapsed',
                        menu_items={'About': f'[AISF Perugia]({aisf_link})',
@@ -121,7 +124,7 @@ def main(path: str = './prenotazioni.csv') -> None:
                 user.email = st.text_input(label='Email', key='email_input')
 
             user.seat = st.selectbox(label='Posto', options=user.get_available_seats(), key='seat_select')
-            user.agree = st.checkbox(label='Consenso al trattamento dei dati')
+            user.agree = st.checkbox(label=f'Acconsento al trattamento dei dati personali secondo le informative sotto riportate')
 
             if st.form_submit_button('Prenota'):
 
@@ -163,6 +166,10 @@ def main(path: str = './prenotazioni.csv') -> None:
                 # prenotation closed
                 else:
                     st.error('Le prenotazione sono attualmente chiuse per te in questo momento.')
+
+            st.markdown(f'**Informative sulla privacy**: [AISF]({aisf_policy}) e [Streamlit]({streamlit_policy})')
+
+        ### prenotation_form ###
 
         st.markdown(' ')
 
