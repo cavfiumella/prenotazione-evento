@@ -49,6 +49,8 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.markdown(parameters['description'])
     st.markdown(f'**Data**: {parameters["date"]}')
     st.markdown(f'**Luogo**: {parameters["place"]}')
+    st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
+    st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
     st.markdown(' ')
 
     # admin login
