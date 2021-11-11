@@ -7,7 +7,6 @@ import os
 import random
 import string
 from typing import Union
-import hashlib
 
 
 class User:
@@ -35,10 +34,6 @@ class User:
 
     def _generate_id(self, length: int = 8) -> str:
         return ''.join(random.sample(string.ascii_letters + string.digits, k=length))
-
-
-    def _hash(self, s: str) -> str:
-        return hashlib.sha256(s.encode()).hexdigest()
 
 
     def _get_df(self) -> pd.DataFrame:
@@ -100,10 +95,6 @@ class User:
             id = self._generate_id()
 
         prenotation = self.get_dict()
-
-        for field in self._fields:
-            if field != 'seat':
-                prenotation[field] = self._hash(prenotation[field])
 
         # check if already registered
         if df.loc[lambda x: x.name == prenotation['name']].loc[lambda x: x.surname == prenotation['surname']].shape[0] != 0:

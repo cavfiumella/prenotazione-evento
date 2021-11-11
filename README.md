@@ -40,8 +40,6 @@ dove `username` e `reponame` sono i nomi dell'utente proprietario della reposito
 
 Gli amministratori, dopo aver fatto l'accesso nel menù in alto a sinistra,
 possono visualizzare e scaricare le prenotazioni espresse fino a quel momento.
-I dati personali sono oscurati utilizzando l'algoritmo SHA256 e gli unici dati in chiaro
-sono il codice identificativo della prenotazione e il posto a sedere occupato.
 
 
 ## Link utili
