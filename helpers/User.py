@@ -115,18 +115,4 @@ class User:
 
         return id
 
-
-    def get_id(self) -> str:
-
-        df = self._get_df()
-
-        for field in self._fields:
-            if field != 'seat':
-                df = df.loc[lambda x: x.loc[:, field] == self._hash(self.get_dict()[field])]
-
-        if df.shape[0] != 0:
-            return df.index.values[0]
-        else:
-            return ''
-
 ### class User ###

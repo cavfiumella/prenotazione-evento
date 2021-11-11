@@ -136,12 +136,7 @@ def main(path: str = './prenotazioni.csv') -> None:
                     st.error('Il consenso al trattamento dei dati personali è obbligatorio')
 
                 elif response == 'already':
-                    st.error('E\' già presente una prenotazione con questo nome')
-
-                    if user.get_id() != '':
-                        st.info(f'Codice prenotazione: **{user.get_id()}**')
-                    else:
-                        st.info(f'Per visualizzare il codice della prenotazione inserire i dati utilizzati in precedenza')
+                    st.error(f'E\' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{aisf_email}](mailto:{aisf_email}).')
 
                 # prenotation registered
                 else:
