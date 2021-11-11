@@ -25,6 +25,7 @@ def main(path: str = './prenotazioni.csv') -> None:
     aisf_email = 'perugia@ai-sf.it'
     aisf_policy = 'https://ai-sf.it/Informativa_Privacy_AISF.pdf'
     streamlit_policy = 'https://streamlit.io/privacy-policy'
+    subscription_link = 'https://ai-sf.it/iscrizione/'
 
     st.set_page_config(page_title=parameters['title'], initial_sidebar_state='collapsed',
                        menu_items={'About': f'[AISF Perugia]({aisf_link})',
@@ -193,10 +194,10 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.subheader('Informazioni sulla pagina')
         st.markdown(' ')
 
-        with st.expander('Espandi'):
-            st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
-            st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
-            st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
+        st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
+        st.markdown(f'Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).')
+        st.markdown(f'**Per maggiori informazioni** contattaci all\'indirizzo email [{aisf_email}](mailto:{aisf_email}).')
+        st.markdown(f'**[Iscriviti ad AISF Perugia]({subscription_link})**')
 
 ### main ###
 
