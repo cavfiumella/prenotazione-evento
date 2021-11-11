@@ -138,6 +138,11 @@ def main(path: str = './prenotazioni.csv') -> None:
                 elif response == 'already':
                     st.error('E\' già presente una prenotazione con questo nome')
 
+                    if user.get_id() != '':
+                        st.info(f'Codice prenotazione: **{user.get_id()}**')
+                    else:
+                        st.info(f'Per visualizzare il codice della prenotazione inserire i dati utilizzati in precedenza')
+
                 # prenotation registered
                 else:
                     st.success('Prenotazione correttamente registrata')
