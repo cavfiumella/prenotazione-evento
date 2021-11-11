@@ -134,6 +134,10 @@ def main(path: str = './prenotazioni.csv') -> None:
 
                 elif response == 'agree':
                     st.error('Il consenso al trattamento dei dati personali è obbligatorio')
+
+                elif response == 'already':
+                    st.error('E\' già presente una prenotazione con questo nome')
+
                 # prenotation registered
                 else:
                     st.success('Prenotazione correttamente registrata')

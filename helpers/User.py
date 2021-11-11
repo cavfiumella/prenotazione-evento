@@ -110,6 +110,10 @@ class User:
             if field != 'seat':
                 prenotation[field] = self._hash(prenotation[field])
 
+        # check if already registered
+        if df.loc[lambda x: x.name == prenotation['name']].loc[lambda x: x.surname == prenotation['surname']].shape[0] != 0:
+            return 'already'
+
         df = df.append(pd.Series(prenotation, name=id))
         df = df.sort_values('seat')
         df.to_csv(self._path)
