@@ -1,6 +1,7 @@
 
 import helpers.User
 import helpers.Admin
+import helpers.time
 
 import pandas as pd
 import streamlit as st
@@ -93,7 +94,7 @@ def main(path: str = './prenotazioni.csv') -> None:
 
                 st.download_button(label='Download',
                                    data=get_csv(df),
-                                   file_name=f'{pd.Timestamp.utcnow().tz_convert("Europe/Rome").strftime("%Y-%m-%d_%H.%M.%S")}.csv',
+                                   file_name=f'{helpers.time.format(helpers.time.now(), format="%Y-%m-%d_%H.%M.%S")}.csv',
                                    key='download_button'
                                   )
 
@@ -125,8 +126,8 @@ def main(path: str = './prenotazioni.csv') -> None:
             if st.form_submit_button('Prenota'):
 
                 # check if prenotation is open
-                is_open = pd.Timestamp.utcnow().tz_convert('Europe/Rome') >= pd.Timestamp(parameters['opening'], tz='Europe/Rome')
-                is_open_members = pd.Timestamp.utcnow().tz_convert('Europe/Rome') >= pd.Timestamp(parameters['members_opening'], tz='Europe/Rome')
+                is_open = helpers.time.now() >= helpers.time.parse(parameters['opening'])
+                is_open_members = helpers.time.now() >= helpers.time.parse(parameters['members_opening'])
 
                 # check if email is registered as association's member
                 is_member = user.email in members

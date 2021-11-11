@@ -2,6 +2,8 @@
 # non-admin user operations
 
 
+from . import time as helpers_time
+
 import pandas as pd
 import os
 import random
@@ -13,13 +15,14 @@ class User:
 
     _path: str = None
     _n_seats: int = -1
-    _fields = ['seat', 'name', 'surname', 'email']
+    _fields = ['seat', 'name', 'surname', 'email', 'time']
 
     name: str = 'None'
     surname: str = 'None'
     email: str = 'None'
     seat: int = -1
     agree: bool = False
+    time: str = 'None'
 
 
     def __init__(self, path, n_seats):
@@ -41,6 +44,10 @@ class User:
             return pd.read_csv(self._path, index_col='id')
         else:
             return pd.DataFrame(columns=self._fields, index=pd.Index([], name='id'))
+
+
+    def _set_time(self) -> None:
+        self.time = helpers_time.format(helpers_time.now())
 
 
     def get_available_seats(self) -> pd.Series:
@@ -93,6 +100,9 @@ class User:
         id = self._generate_id()
         while id in df.index.tolist():
             id = self._generate_id()
+
+        # set prenotation time
+        self._set_time()
 
         prenotation = self.get_dict()
 
