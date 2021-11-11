@@ -145,6 +145,7 @@ def main(path: str = './prenotazioni.csv') -> None:
 
                 # prenotation registered
                 else:
+                    st.info(f'**ATTENZIONE** - conserva il seguente codice di prenotazione: **{response}**')
                     st.success('Prenotazione correttamente registrata')
 
         st.markdown(' ')
