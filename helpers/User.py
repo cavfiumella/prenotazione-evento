@@ -43,6 +43,10 @@ class User:
         self.time = helpers_time.format(helpers_time.now())
 
 
+    def _save_df(self, df: pd.DataFrame):
+        df.to_csv(self._path)
+
+
     def get_df(self) -> pd.DataFrame:
         if os.path.exists(self._path):
             return pd.read_csv(self._path, index_col='id')
@@ -112,7 +116,7 @@ class User:
 
         df = df.append(pd.Series(prenotation, name=id))
         df = df.sort_values('seat')
-        df.to_csv(self._path)
+        self._save_df(df)
 
         return id
 
