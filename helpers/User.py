@@ -30,8 +30,8 @@ class User:
 
 
     def _remove_spaces(self):
-        self.name = self.name.replace(' ', '')
-        self.surname = self.surname.replace(' ', '')
+        self.name = self.name.strip()
+        self.surname = self.surname.strip()
         self.phone = self.phone.replace(' ', '')
 
 
