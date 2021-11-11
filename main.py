@@ -29,7 +29,6 @@ def main(path: str = './prenotazioni.csv') -> None:
 
     # init Admin
     admin = helpers.Admin.Admin(credentials)
-    admin = False
 
     st.sidebar.header('Accedi')
     username = st.sidebar.text_input(label='Username', key='username_input')
