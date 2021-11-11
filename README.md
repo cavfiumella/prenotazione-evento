@@ -32,7 +32,7 @@ La sezione `credentials` dei segreti imposta le credenziali degli amministratori
 
 I segreti possono essere modificati anche dopo aver avviato l'app.
 
-Una volta distribuita l'app è accessibile al link *https://share.streamlit.io/<username>/<reponame>/main/main.py*
+Una volta distribuita l'app è accessibile al link `share.streamlit.io/username/reponame/main/main.py`
 dove `username` e `reponame` sono i nomi dell'utente proprietario della repository Github e della repository stessa.
 
 
