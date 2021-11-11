@@ -14,6 +14,7 @@ def main(path: str = './prenotazioni.csv') -> None:
     # streamlit secrets
     parameters = st.secrets['parameters']
     credentials = st.secrets['credentials']
+    members = st.secrets['members']['emails']
 
     aisf_link = 'http://ai-sf.it/perugia/'
     repo_link = 'https://github.com/cavfiumella/prenotazione-evento'
@@ -118,30 +119,44 @@ def main(path: str = './prenotazioni.csv') -> None:
 
             if st.form_submit_button('Prenota'):
 
-                response = user.save()
+                # check if prenotation is open
+                is_open = pd.Timestamp.utcnow().tz_convert('Europe/Rome') >= pd.Timestamp(parameters['opening'], tz='Europe/Rome')
+                is_open_members = pd.Timestamp.utcnow().tz_convert('Europe/Rome') >= pd.Timestamp(parameters['members_opening'], tz='Europe/Rome')
 
-                # save did not go well
+                # check if email is registered as association's member
+                is_member = user.email in members
 
-                if response == 'name' or response == 'surname':
-                    st.error('Nome e cognome non sono validi')
+                # prenotation is possible for user
+                if is_open or (is_member and is_open_members):
 
-                elif response == 'email':
-                    st.error('Inserire un indirizzo email valido')
+                    response = user.save()
 
-                elif response == 'seat':
-                    st.error('Il posto scelto è già occupato')
-                    st.info('Ricarica la pagina per aggiornare la lista dei posti disponibile')
+                    # save did not go well
 
-                elif response == 'agree':
-                    st.error('Il consenso al trattamento dei dati personali è obbligatorio')
+                    if response == 'name' or response == 'surname':
+                        st.error('Nome e cognome non sono validi')
 
-                elif response == 'already':
-                    st.error(f'E\' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{aisf_email}](mailto:{aisf_email}).')
+                    elif response == 'email':
+                        st.error('Inserire un indirizzo email valido')
 
-                # prenotation registered
+                    elif response == 'seat':
+                        st.error('Il posto scelto è già occupato')
+                        st.info('Ricarica la pagina per aggiornare la lista dei posti disponibile')
+
+                    elif response == 'agree':
+                        st.error('Il consenso al trattamento dei dati personali è obbligatorio')
+
+                    elif response == 'already':
+                        st.error(f'E\' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{aisf_email}](mailto:{aisf_email}).')
+
+                    # prenotation registered
+                    else:
+                        st.info(f'**ATTENZIONE** - conserva il seguente codice di prenotazione: **{response}**')
+                        st.success('Prenotazione correttamente registrata')
+
+                # prenotation closed
                 else:
-                    st.info(f'**ATTENZIONE** - conserva il seguente codice di prenotazione: **{response}**')
-                    st.success('Prenotazione correttamente registrata')
+                    st.error('Le prenotazione sono attualmente chiuse per te in questo momento.')
 
         st.markdown(' ')
 

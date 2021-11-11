@@ -26,9 +26,17 @@ seats = <numero di posti a sedere (e.g. 40)>
 
 username = ["username1", "username2", ...]
 password = ["password1", "password2", ...]
+
+
+[members]
+
+emails = ["mario.rossi@gmail.com", ...]
 ```
 
 La sezione `credentials` dei segreti imposta le credenziali degli amministratori.
+
+La sezione `members` contiene le email degli iscritti al comitato locale AISF.
+Se non ci sono iscritti usare una lista vuota (i.e. `emails = []`).
 
 I segreti possono essere modificati anche dopo aver avviato l'app.
 
