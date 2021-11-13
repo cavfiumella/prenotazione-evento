@@ -47,20 +47,6 @@ def main(path: str = './prenotazioni.csv') -> None:
     st.title(parameters['title'])
     st.markdown(' ')
 
-    st.image(os.path.join(resources_path, 'perugia.png'), width=300)
-    st.markdown(' ')
-
-    st.subheader('Dettagli evento')
-    st.markdown(' ')
-
-    # event information
-    st.markdown(parameters['description'])
-    st.markdown(f'**Data**: {parameters["date"]}')
-    st.markdown(f'**Luogo**: {parameters["place"]}')
-    st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
-    st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
-    st.markdown(' ')
-
     # admin login
     is_admin = False
 
@@ -130,6 +116,20 @@ def main(path: str = './prenotazioni.csv') -> None:
 
     # non-admin user page
     else:
+
+        st.image(os.path.join(resources_path, 'perugia.png'), width=300)
+        st.markdown(' ')
+
+        st.subheader('Dettagli evento')
+        st.markdown(' ')
+
+        # event information
+        st.markdown(parameters['description'])
+        st.markdown(f'**Data**: {parameters["date"]}')
+        st.markdown(f'**Luogo**: {parameters["place"]}')
+        st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
+        st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
+        st.markdown(' ')
 
         st.subheader('Prenotazione posto')
         st.markdown(' ')
