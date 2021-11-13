@@ -70,6 +70,8 @@ def main(path: str = './prenotazioni.csv') -> None:
     # admin page
     if is_admin:
 
+        st.sidebar.button('Logout')
+
         st.header('Console di amministrazione')
         st.markdown(' ')
 
