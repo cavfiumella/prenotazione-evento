@@ -15,8 +15,8 @@ import logging
 def main(path: str = './prenotazioni.csv') -> None:
 
     # streamlit secrets
-    parameters = st.secrets['parameters']
-    credentials = st.secrets['credentials']
+    parameters = dict(st.secrets['parameters'])
+    credentials = dict(st.secrets['credentials'])
     members = st.secrets['members']['emails']
 
     # links
