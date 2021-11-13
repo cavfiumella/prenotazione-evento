@@ -27,7 +27,11 @@ def main(path: str = './prenotazioni.csv') -> None:
     streamlit_policy = 'https://streamlit.io/privacy-policy'
     subscription_link = 'https://ai-sf.it/iscrizione/'
 
-    st.set_page_config(page_title=parameters['title'], initial_sidebar_state='collapsed',
+    # utility dirs
+    resources_path = 'resources'
+
+    st.set_page_config(page_title=parameters['title'], page_icon=os.path.join(resources_path, 'perugia.png'),
+                       initial_sidebar_state='collapsed',
                        menu_items={'About': f'[AISF Perugia]({aisf_link})',
                                    'Report a bug': os.path.join(repo_link, 'issues')
                                   }
@@ -41,6 +45,9 @@ def main(path: str = './prenotazioni.csv') -> None:
 # main page
 
     st.title(parameters['title'])
+    st.markdown(' ')
+
+    st.image(os.path.join(resources_path, 'perugia.png'), width=300)
     st.markdown(' ')
 
     st.subheader('Dettagli evento')
