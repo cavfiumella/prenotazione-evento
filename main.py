@@ -140,7 +140,7 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.markdown(' ')
 
         # prenotation form
-        with st.form('prenotation_form'):
+        with st.form('prenotation_form', clear_on_submit=True):
 
             col1, col2 = st.columns(2)
             with col1:
