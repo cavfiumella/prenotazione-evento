@@ -70,6 +70,9 @@ def main(path: str = './prenotazioni.csv') -> None:
     # admin page
     if is_admin:
 
+        st.header('Console di amministrazione')
+        st.markdown(' ')
+
         st.subheader('Prenotazioni')
         st.markdown(' ')
 
@@ -117,10 +120,10 @@ def main(path: str = './prenotazioni.csv') -> None:
     # non-admin user page
     else:
 
-        st.image(os.path.join(resources_path, 'perugia.png'), width=300)
+        st.image(os.path.join(resources_path, 'perugia.png'), width=250)
         st.markdown(' ')
 
-        st.subheader('Dettagli evento')
+        st.header('Informazioni sull\'evento')
         st.markdown(' ')
 
         # event information
@@ -131,7 +134,7 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
         st.markdown(' ')
 
-        st.subheader('Prenotazione posto')
+        st.header('Prenotazione posto')
         st.markdown(' ')
 
         # prenotation form
@@ -198,7 +201,7 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.markdown(' ')
 
         # footer: page information
-        st.subheader('Informazioni sulla pagina')
+        st.header('Informazioni sulla pagina')
         st.markdown(' ')
 
         st.markdown(f'Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).')
