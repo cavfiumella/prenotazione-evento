@@ -133,7 +133,9 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.markdown(f'**Data**: {parameters["date"]}')
         st.markdown(f'**Luogo**: {parameters["place"]}')
         st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
+        st.markdown(f'**Chiusura delle prenotazioni per i membri AISF**: {parameters["members_closure"]}')
         st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
+        st.markdown(f'**Chiusura delle prenotazioni pubbliche**: {parameters["closure"]}')
         st.markdown(' ')
 
         st.header('Prenotazione posto')
@@ -158,8 +160,8 @@ def main(path: str = './prenotazioni.csv') -> None:
             if st.form_submit_button('Prenota'):
 
                 # check if prenotation is open
-                is_open = helpers.time.now() >= helpers.time.parse(parameters['opening'])
-                is_open_members = helpers.time.now() >= helpers.time.parse(parameters['members_opening'])
+                is_open = helpers.time.now() >= helpers.time.parse(parameters['opening']) and helpers.time.now() < helpers.time.parse(parameters['closure'])
+                is_open_members = helpers.time.now() >= helpers.time.parse(parameters['members_opening']) and helpers.time.now() < helpers.time.parse(parameters['members_closure'])
 
                 # check if email is registered as association's member
                 is_member = user.email in members
