@@ -194,7 +194,7 @@ def main(path: str = './prenotazioni.csv') -> None:
 
                 # prenotation closed
                 else:
-                    st.error('Le prenotazione sono attualmente chiuse per te in questo momento.')
+                    st.error('Le prenotazione sono attualmente chiuse.')
 
             st.markdown(f'**Informative sulla privacy**: [AISF]({aisf_policy}) e [Streamlit]({streamlit_policy})')
 
