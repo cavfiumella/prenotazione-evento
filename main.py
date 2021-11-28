@@ -132,10 +132,12 @@ def main(path: str = './prenotazioni.csv') -> None:
         st.markdown(parameters['description'])
         st.markdown(f'**Data**: {parameters["date"]}')
         st.markdown(f'**Luogo**: {parameters["place"]}')
-        st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
-        st.markdown(f'**Chiusura delle prenotazioni per i membri AISF**: {parameters["members_closure"]}')
-        st.markdown(f'**Apertura delle prenotazioni pubbliche**: {parameters["opening"]}')
-        st.markdown(f'**Chiusura delle prenotazioni pubbliche**: {parameters["closure"]}')
+        if helpers.time.parse(parameters["members_opening"]) != helpers.time.parse(parameters["opening"]):
+            st.markdown(f'**Apertura delle prenotazioni per i membri AISF**: {parameters["members_opening"]}')
+        st.markdown(f'**Apertura delle prenotazioni**: {parameters["opening"]}')
+        if helpers.time.parse(parameters["members_closure"]) != helpers.time.parse(parameters["closure"]):
+            st.markdown(f'**Chiusura delle prenotazioni per i membri AISF**: {parameters["members_closure"]}')
+        st.markdown(f'**Chiusura delle prenotazioni**: {parameters["closure"]}')
         st.markdown(' ')
 
         st.header('Prenotazione posto')
