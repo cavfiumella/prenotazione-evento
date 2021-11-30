@@ -82,6 +82,12 @@ def main(path: str = './prenotazioni.csv') -> None:
         df = user.get_df()
         st.dataframe(df)
 
+        # occupied seats
+        st.markdown(" ")
+        st.markdown(f"**Numero di prenotazioni**: {df.shape[0]}")
+        st.markdown(f"**Posti disponibili**: {parameters['seats'] - df.shape[0]}")
+        st.markdown(f"**Capienza libera**: {1 - df.shape[0] / parameters['seats'] :.0%}")
+
         # convert df to csv
         @st.cache
         def get_csv(df: pd.DataFrame) -> str:
@@ -91,6 +97,8 @@ def main(path: str = './prenotazioni.csv') -> None:
         # pressing download buttons logout admin automatically.
         # a form does not solve the problem because download buttons
         # can not be used in forms
+
+        st.markdown(" ")
 
         # download df
         st.download_button(label='Scarica prenotazioni',
