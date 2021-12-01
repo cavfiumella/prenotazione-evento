@@ -1,4 +1,5 @@
 
+import helpers.Database
 import helpers.User
 import helpers.Admin
 import helpers.time
@@ -39,8 +40,9 @@ def main(path: str = "./prenotazioni.csv") -> None:
                       )
 
     # init objects
+    db = helpers.Database.Database(path, parameters['seats'])
     admin = helpers.Admin.Admin(credentials)
-    user = helpers.User.User(path, parameters['seats'])
+    user = helpers.User.User()
     logbook = helpers.Logbook.Logbook()
 
 # main page
@@ -85,7 +87,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(" ")
 
         # print prenotations
-        df = user.get_df()
+        df = db.get_df()
         st.dataframe(df)
 
         # occupied seats
@@ -170,7 +172,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
             with col1:
                 user.email = st.text_input(label="Email", key="email_input")
 
-            user.seat = st.selectbox(label="Posto", options=user.get_available_seats(), key="seat_select")
+            user.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
             user.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate")
 
             if st.form_submit_button("Prenota"):
@@ -185,29 +187,30 @@ def main(path: str = "./prenotazioni.csv") -> None:
                 # prenotation is possible for user
                 if is_open or (is_member and is_open_members):
 
-                    response = user.save()
+                    user.time = helpers.time.format(helpers.time.now())
+                    id = db.register(user)
 
-                    # save did not go well
+                    # registration did not go well
 
-                    if response == "name" or response == "surname":
+                    if id == "name" or id == "surname":
                         st.error("Nome e cognome non sono validi")
 
-                    elif response == "email":
+                    elif id == "email":
                         st.error("Inserire un indirizzo email valido")
 
-                    elif response == "seat":
+                    elif id == "seat":
                         st.error("Il posto scelto è già occupato")
                         st.info("Ricarica la pagina per aggiornare la lista dei posti disponibile")
 
-                    elif response == "agree":
+                    elif id == "agree":
                         st.error("Il consenso al trattamento dei dati personali è obbligatorio")
 
-                    elif response == "already":
+                    elif id == "already":
                         st.error(f"E' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{aisf_email}](mailto:{aisf_email}).")
 
                     # prenotation registered
                     else:
-                        st.info(f"**ATTENZIONE** - conserva il seguente codice di prenotazione: **{response}**")
+                        st.info(f"**ATTENZIONE** - conserva il seguente codice di prenotazione: **{id}**")
                         st.success("Prenotazione correttamente registrata")
 
                 # prenotation closed
