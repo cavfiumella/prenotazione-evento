@@ -1,14 +1,13 @@
 
-# admin users access manager
-
-
 import pandas as pd
 from typing import Union
 
 
 class Admin:
 
-    _credentials: pd.DataFrame = pd.DataFrame()
+    """Admin operations class."""
+
+    __credentials: pd.DataFrame = pd.DataFrame()
 
 
     def __init__(self, credentials: Union[pd.DataFrame,dict]):
@@ -18,23 +17,23 @@ class Admin:
             credentials = pd.DataFrame(credentials)
 
         # validate dataframe
-        for col in ['username', 'password']:
+        for col in ["username", "password"]:
             if col not in credentials.columns.tolist():
-                raise ValueError('invalid credentials')
+                raise ValueError("invalid credentials")
 
-        self._credentials = credentials
+        self.__credentials = credentials
 
 
     def auth(self, username: str, password: str) -> bool:
 
-        '''Return True if user is registered and credentials are correct,
-           False otherwise'''
+        """Return True if user is registered and credentials are correct,
+           False otherwise."""
 
         # look for user
-        if username not in self._credentials.username.tolist():
+        if username not in self.__credentials.username.tolist():
             return False
 
         # check password
-        return password == self._credentials.loc[lambda x: x.username == username].password.values[0]
+        return password == self.__credentials.loc[lambda x: x.username == username].password.values[0]
 
 ### class Admin ###
