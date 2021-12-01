@@ -91,3 +91,16 @@ class Database:
         self.__save_df(df)
 
         return id
+
+
+    def remove(self, id: str) -> int:
+
+        df = self.get_df()
+        n_before = df.shape[0]
+
+        df = df.drop(id)
+        n_after = df.shape[0]
+
+        self.__save_df(df)
+
+        return n_before - n_after

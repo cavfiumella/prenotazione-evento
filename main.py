@@ -103,6 +103,25 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(f"**Posti disponibili**: {parameters['seats'] - df.shape[0]}")
         st.markdown(f"**Capienza libera**: {1 - df.shape[0] / parameters['seats'] :.0%}")
 
+        # remove prenotation
+        st.markdown(" ")
+        with st.form("remove_form"):
+
+            st.markdown("**Rimuovi prenotazione**")
+            st.markdown("**ATTENZIONE**: questa operazione non è reversibile")
+
+            ids = db.get_df().index.tolist()
+            id = st.selectbox(label="ID prenotazione", options=ids, key="remove_select")
+
+            if st.form_submit_button("Rimuovi"):
+                if id == None:
+                    st.error("Impossibile rimuovere la prenotazione.")
+                else:
+                    seat = db.get_df().loc[id].seat
+                    db.remove(id)
+                    st.success(f"Prenotazione **{id}** al posto **{seat}** correttamente eliminata.")
+                    logbook.log(f"Prenotation {id} on seat {seat} removed.")
+
         # convert df to csv
         @st.cache
         def get_csv(df: pd.DataFrame) -> str:
