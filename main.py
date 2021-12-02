@@ -170,15 +170,32 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(" ")
 
         # event information
+
         st.markdown(parameters["description"])
         st.markdown(f"**Data**: {parameters['date']}")
         st.markdown(f"**Luogo**: {parameters['place']}")
-        if helpers.time.parse(parameters["members_opening"]) != helpers.time.parse(parameters["opening"]):
-            st.markdown(f"**Apertura delle prenotazioni per i membri AISF**: {parameters['members_opening']}")
-        st.markdown(f"**Apertura delle prenotazioni**: {parameters['opening']}")
-        if helpers.time.parse(parameters["members_closure"]) != helpers.time.parse(parameters["closure"]):
-            st.markdown(f"**Chiusura delle prenotazioni per i membri AISF**: {parameters['members_closure']}")
-        st.markdown(f"**Chiusura delle prenotazioni**: {parameters['closure']}")
+
+        # prenotations opening and closing time
+        opening = helpers.time.parse(parameters["opening"])
+        members_opening = helpers.time.parse(parameters["members_opening"])
+        closing = helpers.time.parse(parameters["closing"])
+        members_closing = helpers.time.parse(parameters["members_closing"])
+
+        fmt = "%A %d %B %Y alle %H:%M" # format to print
+
+        for x in [opening, members_opening, closing, members_closing]:
+            if x.second != 0:
+                fmt += ":%S"
+                break
+
+        if members_opening != opening:
+            st.markdown(f"**Apertura delle prenotazioni per i membri AISF**: {helpers.time.format(members_opening, fmt)}")
+        st.markdown(f"**Apertura delle prenotazioni**: {helpers.time.format(opening, fmt)}")
+
+        if members_closing != closing:
+            st.markdown(f"**Chiusura delle prenotazioni per i membri AISF**: {helpers.time.format(members_closing, fmt)}")
+        st.markdown(f"**Chiusura delle prenotazioni**: {helpers.time.format(closing, fmt)}")
+
         st.markdown(" ")
 
         # prenotation
@@ -203,8 +220,9 @@ def main(path: str = "./prenotazioni.csv") -> None:
             if st.form_submit_button("Prenota"):
 
                 # check if prenotation is open
-                is_open = helpers.time.now() >= helpers.time.parse(parameters["opening"]) and helpers.time.now() < helpers.time.parse(parameters["closure"])
-                is_open_members = helpers.time.now() >= helpers.time.parse(parameters["members_opening"]) and helpers.time.now() < helpers.time.parse(parameters["members_closure"])
+                now = helpers.time.now()
+                is_open = now >= opening and now < closing
+                is_open_members = now >= members_opening and now < members_closing
 
                 # check if email is registered as association's member
                 is_member = user.email in members
