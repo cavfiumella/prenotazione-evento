@@ -5,7 +5,7 @@ from typing import Union
 
 class Admin:
 
-    """Admin operations class."""
+    """Admin access manager."""
 
     __credentials: pd.DataFrame = pd.DataFrame()
 
