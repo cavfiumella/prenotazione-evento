@@ -93,22 +93,39 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.subheader("Prenotazioni")
         st.markdown(" ")
 
-        # print prenotations
         df = db.get_df()
+
+        # download df
+
+        # a complete function is defined to get df as csv to use streamlit cache feature
+        @st.cache
+        def get_csv(df: pd.DataFrame) -> str:
+            return df.to_csv().encode("utf-8")
+
+        st.download_button(label="Scarica prenotazioni",
+                           data=get_csv(df),
+                           file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.csv",
+                           on_click=logbook.log,
+                           args=(f"Prenotations downloaded by admin \"{st.session_state['admin_username']}\"",),
+                           key="prenotations_download_button"
+                          )
+        st.markdown(" ")
+
+        # print prenotations
         st.dataframe(df)
+        st.markdown(" ")
 
         # occupied seats
-        st.markdown(" ")
         st.markdown(f"**Numero di prenotazioni**: {df.shape[0]}")
         st.markdown(f"**Posti disponibili**: {parameters['seats'] - df.shape[0]}")
         st.markdown(f"**Capienza libera**: {1 - df.shape[0] / parameters['seats'] :.0%}")
+        st.markdown(" ")
 
         # remove prenotation
-        st.markdown(" ")
         with st.form("remove_form"):
 
             st.markdown("**Rimuovi prenotazione**")
-            st.markdown("**ATTENZIONE**: questa operazione non è reversibile")
+            st.markdown("**ATTENZIONE**: la rimozione di una prenotazione non è reversibile")
 
             ids = db.get_df().index.tolist()
             id = st.selectbox(label="ID prenotazione", options=ids, key="remove_select")
@@ -121,31 +138,13 @@ def main(path: str = "./prenotazioni.csv") -> None:
                     db.remove(id)
                     st.success(f"Prenotazione **{id}** al posto **{seat}** correttamente eliminata.")
                     logbook.log(f"Prenotation {id} on seat {seat} removed.")
-
-        # convert df to csv
-        @st.cache
-        def get_csv(df: pd.DataFrame) -> str:
-            return df.to_csv().encode("utf-8")
-
         st.markdown(" ")
 
-        # download df
-        st.download_button(label="Scarica prenotazioni",
-                           data=get_csv(df),
-                           file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.csv",
-                           on_click=logbook.log,
-                           args=(f"Prenotations downloaded by admin \"{st.session_state['admin_username']}\"",),
-                           key="prenotations_download_button"
-                          )
-
-        st.markdown(" ")
-
+        # logbook
         st.subheader("Logbook")
         st.markdown(" ")
 
-        # print logbook
         logs = logbook.read()
-        st.text(logs)
 
         # download logbook
         st.download_button(label="Scarica logbook",
@@ -155,6 +154,11 @@ def main(path: str = "./prenotazioni.csv") -> None:
                            args=(f"Logs downloaded by admin \"{st.session_state['admin_username']}\"",),
                            key="logs_download_button"
                           )
+        st.markdown(" ")
+
+        # print logbook
+        st.text(logs)
+        st.markdown(" ")
 
     # non-admin user page
     else:
