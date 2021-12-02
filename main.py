@@ -55,9 +55,11 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.info(maintanance["msg"])
         return
 
-    # admin login
-    is_admin = False
+    # admin permissions
+    if "is_admin" not in st.session_state:
+        st.session_state["is_admin"] = False
 
+    # admin login
     with st.form("admin_login", clear_on_submit=True):
         with st.sidebar:
 
@@ -69,16 +71,21 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
             if st.form_submit_button("Login"):
                 if admin.auth(username, password):
-                    is_admin = True
+                    st.session_state["is_admin"] = True
+                    st.session_state["admin_username"] = username
                     logbook.log(f"Admin \"{username}\" logged in")
                 else:
                     st.error("Credenziali errate!")
                     logbook.log(f"Login attempt with wrong credentials:   username: \"{username}\", password: \"{password}\"")
 
-    # admin page
-    if is_admin:
+            if st.session_state["is_admin"] and st.form_submit_button("Logout"):
+                username = st.session_state["admin_username"]
+                st.session_state["is_admin"] = False
+                del st.session_state["admin_username"]
+                logbook.log(f"Admin \"{username}\" logged out")
 
-        st.sidebar.button("Logout")
+    # admin page
+    if st.session_state["is_admin"]:
 
         st.header("Console di amministrazione")
         st.markdown(" ")
@@ -101,11 +108,6 @@ def main(path: str = "./prenotazioni.csv") -> None:
         def get_csv(df: pd.DataFrame) -> str:
             return df.to_csv().encode("utf-8")
 
-        # [BUG]
-        # pressing download buttons logout admin automatically.
-        # a form does not solve the problem because download buttons
-        # can not be used in forms
-
         st.markdown(" ")
 
         # download df
@@ -113,7 +115,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                            data=get_csv(df),
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.csv",
                            on_click=logbook.log,
-                           args=(f"Prenotations downloaded by admin \"{username}\"",),
+                           args=(f"Prenotations downloaded by admin \"{st.session_state['admin_username']}\"",),
                            key="prenotations_download_button"
                           )
 
@@ -131,7 +133,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                            data=logs,
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.log",
                            on_click=logbook.log,
-                           args=(f"Logs downloaded by admin \"{username}\"",),
+                           args=(f"Logs downloaded by admin \"{st.session_state['admin_username']}\"",),
                            key="logs_download_button"
                           )
 
