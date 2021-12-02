@@ -16,6 +16,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
     # streamlit secrets
     parameters = dict(st.secrets["parameters"])
+    maintanance = dict(st.secrets["maintanance"])
     credentials = dict(st.secrets["credentials"])
     members = st.secrets["members"]["emails"]
 
@@ -46,6 +47,11 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
     st.title(parameters["title"])
     st.markdown(" ")
+
+    # maintanance mode
+    if maintanance["active"]:
+        st.info(maintanance["msg"])
+        return
 
     # admin login
     is_admin = False
