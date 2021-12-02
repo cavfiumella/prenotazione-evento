@@ -69,6 +69,13 @@ con le operazioni eseguite dagli amministratori di sistema.
 Possono inoltre rimuovere una prenotazione dall'elenco.
 
 
+### Icona pagina
+
+Per sostituire l'icona della pagina e il logo mostrato nella pagina di prenotazione
+sovrascrivere rispettivamente i file `resources/page_icon.png` e `resources/local.png`
+con le immagini desiderate.
+
+
 ### Link utili
 
 - [Profilo Github sviluppatore](https://github.com/cavfiumella)

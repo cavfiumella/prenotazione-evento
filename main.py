@@ -32,7 +32,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
     # utility dirs
     resources_path = "resources"
 
-    st.set_page_config(page_title=parameters["title"], page_icon=os.path.join(resources_path, "perugia.png"),
+    st.set_page_config(page_title=parameters["title"], page_icon=os.path.join(resources_path, "page_icon.png"),
                        initial_sidebar_state="collapsed",
                        menu_items={"About": f"[AISF Perugia]({aisf_link})",
                                    "Report a bug": os.path.join(repo_link, "issues")
@@ -163,7 +163,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
     # non-admin user page
     else:
 
-        st.image(os.path.join(resources_path, "perugia.png"), width=250)
+        st.image(os.path.join(resources_path, "local.png"), width=250)
         st.markdown(" ")
 
         st.header("Informazioni sull'evento")
