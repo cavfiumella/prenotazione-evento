@@ -5,9 +5,6 @@ import pandas as pd
 import locale
 
 
-# set locale for timestamps (not the tz but words language, e.g. weekdays names)
-locale.setlocale(locale.LC_TIME, locale.getlocale())
-
 def now(tz: str = "Europe/Rome") -> pd.Timestamp:
     return pd.Timestamp.utcnow().tz_convert(tz)
 
