@@ -181,10 +181,10 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(f"**Chiusura delle prenotazioni**: {parameters['closure']}")
         st.markdown(" ")
 
+        # prenotation
         st.header("Prenotazione posto")
         st.markdown(" ")
 
-        # prenotation form
         with st.form("prenotation_form", clear_on_submit=True):
 
             col1, col2 = st.columns(2)
@@ -245,7 +245,6 @@ def main(path: str = "./prenotazioni.csv") -> None:
             st.markdown(f"**Informative sulla privacy**: [AISF]({aisf_policy}) e [Streamlit]({streamlit_policy})")
 
         ### prenotation_form ###
-
         st.markdown(" ")
 
         # footer: page information
