@@ -157,22 +157,22 @@ def main() -> None:
                     if st.secrets.mail.active:
 
                         subject = "Cancellazione prenotazone MELT"
-                        text = f"""
-                        Ciao {prenotation.loc["name"]}!
+                        text = f"""\
+Ciao {prenotation.loc["name"]}!
 
-                        La seguente prenotazione è stata cancellata:
+La seguente prenotazione è stata cancellata:
 
-                        Codice di prenotazione: {prenotation.name}
-                        Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
-                        Email: {prenotation.email}
-                        Posto: {prenotation.seat}
+Codice di prenotazione: {prenotation.name}
+Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
+Email: {prenotation.email}
+Posto: {prenotation.seat}
 
-                        Speriamo di rivederti in futuro!
-                        Alla prossima!
+Speriamo di rivederti in futuro!
+Alla prossima!
 
-                        ______________________________
-                        {st.secrets.mail.signature}
-                        Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
+______________________________
+{st.secrets.mail.signature}
+Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                         try:
                             postman.send(prenotation.email, subject, text)
@@ -311,22 +311,22 @@ def main() -> None:
                         if st.secrets.mail.active:
 
                             subject = "Conferma prenotazone MELT"
-                            text = f"""
-                            Ciao {prenotation.loc['name']}!
+                            text = f"""\
+Ciao {prenotation.loc['name']}!
 
-                            La tua prenotazione e' stata correttamente registrata, eccone il riepilogo:
+La tua prenotazione è stata correttamente registrata, eccone il riepilogo:
 
-                            Codice di prenotazione: {prenotation.name}
-                            Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
-                            Email: {prenotation.email}
-                            Posto: {prenotation.seat}
+Codice di prenotazione: {prenotation.name}
+Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
+Email: {prenotation.email}
+Posto: {prenotation.seat}
 
-                            Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
-                            A presto!
+Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
+A presto!
 
-                            ______________________________
-                            {st.secrets.mail.signature}
-                            Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
+______________________________
+{st.secrets.mail.signature}
+Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                             try:
                                 postman.send(prenotation.email, subject, text)
