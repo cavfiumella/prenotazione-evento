@@ -57,7 +57,7 @@ def main() -> None:
     with st.form("admin_login", clear_on_submit=True):
         with st.sidebar:
 
-            st.header("Accedi")
+            st.header("Accedi \U0001F510")
             admin = helpers.Admin.Admin(dict(st.secrets.admins)) # access manager
 
             # credentials
@@ -94,10 +94,10 @@ def main() -> None:
     # admin console
     if st.session_state.is_admin:
 
-        st.header("Console di amministrazione")
+        st.header("\U0001F4CB Console di amministrazione")
         st.markdown(" ")
 
-        st.subheader("Prenotazioni")
+        st.subheader("\U0001F4DD Prenotazioni")
         st.markdown(" ")
 
         df = db.get_df()
@@ -148,7 +148,7 @@ def main() -> None:
         st.markdown(" ")
 
         # logbook
-        st.subheader("Logbook")
+        st.subheader("\U0001F4C4 Logbook")
         st.markdown(" ")
 
         logs = logbook.read()
@@ -174,7 +174,7 @@ def main() -> None:
             st.image(st.secrets.resources.main_logo, width=250)
             st.markdown(" ")
 
-        st.header("Informazioni sull'evento")
+        st.header("\U0001F4C5 Informazioni sull'evento")
         st.markdown(" ")
 
         # event information
@@ -207,7 +207,7 @@ def main() -> None:
         st.markdown(" ")
 
         # prenotation
-        st.header("Prenotazione posto")
+        st.header("\U0001F4DD Prenotazione posto")
         st.markdown(" ")
 
         with st.form("prenotation_form", clear_on_submit=True):
@@ -309,7 +309,7 @@ def main() -> None:
         st.markdown(" ")
 
         # footer: page information
-        st.header("Informazioni sulla pagina")
+        st.header("\U0001F310 Informazioni sulla pagina")
         st.markdown(" ")
 
         st.markdown(f"Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({st.secrets.links.local_aisf}).")
