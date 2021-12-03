@@ -179,7 +179,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
         # event information
 
         st.markdown(parameters["description"])
-        st.markdown(f"**Data**: {parameters['date']}")
+        st.markdown(f"**Data**: {helpers.time.format(parameters['date'], '%A %d %B %Y alle %H:%M')}")
         st.markdown(f"**Luogo**: {parameters['place']}")
 
         # prenotations opening and closing time
@@ -267,7 +267,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
                 # prenotation closed
                 else:
-                    st.error("Le prenotazione sono attualmente chiuse.")
+                    st.error("Le prenotazioni sono attualmente chiuse.")
 
             st.markdown(f"**Informative sulla privacy**: [AISF]({aisf_policy}) e [Streamlit]({streamlit_policy})")
 
