@@ -268,7 +268,9 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                 prenotation.email = st.text_input(label="Email", key="email_input")
 
             prenotation.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
-            prenotation.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate.")
+            prenotation.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali \
+                                                    secondo le informative sotto riportate."
+                                            )
 
             if st.form_submit_button("Prenota"):
 
@@ -302,7 +304,10 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                         st.error("Il consenso al trattamento dei dati personali è obbligatorio.")
 
                     elif id == "already":
-                        st.error(f"E' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
+                        st.error(f"E' già presente una prenotazione con questo nome. \
+                                   Per recuperare il codice di prenotazione contatta \
+                                   [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf})."
+                                )
 
                     # prenotation registered
                     else:
@@ -332,13 +337,15 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                                 postman.send(prenotation.email, subject, text)
                             except Exception:
                                 logging.error(traceback.format_exc())
-                                st.error(f"""**ATTENZIONE**: si è verificato un errore inatteso \
-                                e non è stato possibile inviare una mail di conferma all'indirizzo \
-                                {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
-                                Ci scusiamo per il disagio.""")
+                                st.error(f"**ATTENZIONE**: si è verificato un errore inatteso \
+                                           e non è stato possibile inviare una mail di conferma all'indirizzo \
+                                           {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                                           Ci scusiamo per il disagio."
+                                        )
                             else:
                                 st.info(f"Ti abbiamo inviato una mail di riepilogo all'indirizzo **{prenotation.email}**. \
-                                Se non la trovi controlla la cartella della posta indesiderata.")
+                                          Se non la trovi controlla la cartella della posta indesiderata."
+                                       )
 
                         # no confirmation mail
                         else:
@@ -351,7 +358,9 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                 else:
                     st.error("Le prenotazioni sono chiuse.")
 
-            st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e [Streamlit]({st.secrets.links.streamlit_policy})")
+            st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e \
+                          [Streamlit]({st.secrets.links.streamlit_policy})"
+                       )
 
         ### prenotation_form ###
         st.markdown(" ")
@@ -362,7 +371,9 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
         st.markdown(f"Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({st.secrets.links.local_aisf}).")
         st.markdown(f"Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({st.secrets.links.repo}).")
-        st.markdown(f"**Per maggiori informazioni** contattaci all'indirizzo email [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
+        st.markdown(f"**Per maggiori informazioni** contattaci all'indirizzo email \
+                      [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf})."
+                   )
         st.markdown(f"**[Iscriviti ad AISF Perugia]({st.secrets.links.subscription})**")
 
     del db
