@@ -67,6 +67,12 @@ def main(path: str = "./prenotazioni.csv") -> None:
             password = st.text_input(label="Password", type="password", key="password_input")
 
             if st.form_submit_button("Login"):
+
+                # logout previous authenticated user
+                st.session_state["is_admin"] = False
+                if "admin_username" in st.session_state:
+                    del st.session_state["admin_username"]
+
                 if admin.auth(username, password):
                     st.session_state["is_admin"] = True
                     st.session_state["admin_username"] = username
