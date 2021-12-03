@@ -28,7 +28,7 @@ except Exception:
     logging.info(f"current locale is \"{'.'.join(LOCALE)}\"")
 
 
-def main(path: str = "./prenotazioni.csv") -> None:
+def main() -> None:
 
 
     # links
@@ -49,7 +49,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
 # page header
 
-    logbook = helpers.Logbook.Logbook()
+    logbook = helpers.Logbook.Logbook(st.secrets.resources.logbook if "resources" in st.secrets and "logbook" in st.secrets.resources else None)
 
     st.title(st.secrets.event.title)
     st.markdown(" ")
@@ -97,7 +97,9 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
 # page content
 
-    db = helpers.Database.Database(path, st.secrets.prenotations.seats)
+    db = helpers.Database.Database(st.secrets.prenotations.seats,
+                                   st.secrets.resources.prenotations if "resources" in st.secrets and "prenotations" in st.secrets.resources else None
+                                  )
 
     # admin console
     if st.session_state.is_admin:
@@ -331,10 +333,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) < 2:
-            main()
-        else:
-            main(path=sys.argv[1])
+        main()
     except Exception:
         logging.critical(traceback.format_exc())
         st.error("E' stato riscontrato un error inaspettato. Provare a ricaricare la pagina. Ci scusiamo per il disagio.")

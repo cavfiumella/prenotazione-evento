@@ -11,14 +11,14 @@ class Database:
 
     """Manages prenotations file"""
 
-    __path: str = None
     __n_seats: int = -1
+    __path: str = "prenotations.csv"
     __fields = ["seat", "name", "surname", "email", "time"]
 
 
-    def __init__(self, path: str, n_seats: int):
-        self.__path = path
+    def __init__(self, n_seats: int, path: str = None):
         self.__n_seats = n_seats
+        if path != None: self.__path = path
 
 
     def __generate_id(self, length: int = 8) -> str:

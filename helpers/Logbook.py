@@ -9,8 +9,8 @@ class Logbook:
     __path: str = "logbook"
 
 
-    def __init__(self, path: str = "logbook"):
-        self.__path = path
+    def __init__(self, path: str = None):
+        if path != None: self.__path = path
 
 
     def log(self, s: str):

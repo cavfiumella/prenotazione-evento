@@ -63,6 +63,8 @@ password = "sender_email_password"
 
 page_icon = "resources/page_icon.png"
 main_logo = "resources/logo.png"
+prenotations = "prenotations.csv"
+logbook = "logbook"
 ```
 
 I segreti sono utili ad impostare parametri variabili dell'app a seconda delle necessità
@@ -79,7 +81,7 @@ della pagina;
 - la sezione `mail` attiva o disattiva l'invio di email riepilogative sulla prenotazione
 effettuata agli utenti che prenotano un posto;
 - la sezione `resources` specifica la posizione delle immagini da usare come icona della pagina
-e come logo nel form di prenotazione.
+e come logo nel form di prenotazione e dei file dove salvare le prenotazioni e il logbook.
 
 Tutti i parametri sono obbligatori ad eccezione della sezione `resources` che può essere omessa.
 
