@@ -356,7 +356,7 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                 # prenotation closed
                 else:
-                    st.error("Le prenotazioni sono chiuse.")
+                    st.error("Le prenotazioni sono **chiuse**.")
 
             st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e \
                           [Streamlit]({st.secrets.links.streamlit_policy})"
