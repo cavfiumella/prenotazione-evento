@@ -17,43 +17,71 @@ quindi aprire le impostazioni avanzate ed eseguire le seguenti azioni:
 - impostare i **segreti** come segue:
 
 ```
-[parameters]
+[event]
 
-title = "Titolo pagina"
-description = "Descrizione generica dell'evento"
-date = "data dell'evento"
-place = "luogo dell'evento"
-seats = <numero di posti a sedere (e.g. 40)>
+title = "Titolo dell'evento"
+description = "Descrizione dell'evento"
+date = "2021-01-01 17:00:00"
+place = "Aula A - Dipartimento di Fisica"
+
+
+[prenotations]
+
+seats = 40
 members_opening = "2021-01-01 00:00:00"
 opening = "2021-01-01 00:00:00"
 members_closing = "2022-01-01 00:00:00"
 closing = "2022-01-01 00:00:00"
 
 
-[maintanance]
+[maintenance]
 
-active = <true o false>
-msg = "Messaggio informativo mostrato quando `active = true`"
+active = false
+message = "Il sito web è attualmente in manutenzione. Per maggiori informazioni contatta [webmaster@email.com](mailto:webmaster@email.com)"
 
 
-[credentials]
+[admins]
 
-username = ["username1", "username2", ...]
-password = ["password1", "password2", ...]
+username = ["master"]
+password = ["master_password"]
 
 
 [members]
 
-emails = ["mario.rossi@gmail.com", ...]
+emails = []
+
+
+[mail]
+
+active = true
+smtp_server = "smtp.gmail.com"
+sender_email = "sender@gmail.com"
+password = "sender_email_password"
+
+
+[resources]
+
+page_icon = "resources/page_icon.png"
+main_logo = "resources/logo.png"
 ```
 
-La sezione `maintanance` attiva e disattiva la modalità manutenzione della pagina
-che disabilita l'accesso al pubblico mostrando un messaggio informativo (i.e. `msg`).
+I segreti sono utili ad impostare parametri variabili dell'app a seconda delle necessità
+specifiche dell'evento o del comitato.
+I parametri sono così strutturati:
+- la sezione `event` contiene le informazioni sull'evento;
+- la sezione `prenotations` contiene informazioni riguardanti le prenotazioni,
+quali il numero di posti a sedere, gli orari di apertura e chiusura delle prenotazioni per i membri AISF e non;
+- la sezione `maintenance` attiva e disattiva la modalità manutenzione della pagina
+in cui l'accesso al pubblico viene disabilitato e mostra un messaggio informativo;
+- la sezione `admins` contiene le credenziali degli utenti con privilegi di amministrazione
+della pagina;
+- la sezione `members` contiene gli indirizzi email degli iscritti AISF;
+- la sezione `mail` attiva o disattiva l'invio di email riepilogative sulla prenotazione
+effettuata agli utenti che prenotano un posto;
+- la sezione `resources` specifica la posizione delle immagini da usare come icona della pagina
+e come logo nel form di prenotazione.
 
-La sezione `credentials` imposta le credenziali degli amministratori.
-
-La sezione `members` contiene le email degli iscritti al comitato locale AISF.
-Se non ci sono iscritti usare una lista vuota (i.e. `emails = []`).
+Tutti i parametri sono obbligatori ad eccezione della sezione `resources` che può essere omessa.
 
 I segreti possono essere modificati anche dopo aver avviato l'app dalle sue impostazioni.
 
@@ -67,13 +95,6 @@ Gli amministratori, dopo aver eseguito il login nel menù in alto a sinistra,
 possono visualizzare e scaricare le prenotazioni espresse fino a quel momento e il logbook
 con le operazioni eseguite dagli amministratori di sistema.
 Possono inoltre rimuovere una prenotazione dall'elenco.
-
-
-### Icona pagina
-
-Per sostituire l'icona della pagina e il logo mostrato nella pagina di prenotazione
-sovrascrivere rispettivamente i file `resources/page_icon.png` e `resources/local.png`
-con le immagini desiderate.
 
 
 ### Link utili

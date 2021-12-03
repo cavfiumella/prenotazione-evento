@@ -16,12 +16,6 @@ import logging
 
 def main(path: str = "./prenotazioni.csv") -> None:
 
-    # streamlit secrets
-    parameters = dict(st.secrets["parameters"])
-    maintanance = dict(st.secrets["maintanance"])
-    credentials = dict(st.secrets["credentials"])
-    members = st.secrets["members"]["emails"]
-    mail_parameters = dict(st.secrets["mail"])
 
     # links
     aisf_link = "http://ai-sf.it/perugia/"
@@ -31,10 +25,8 @@ def main(path: str = "./prenotazioni.csv") -> None:
     streamlit_policy = "https://streamlit.io/privacy-policy"
     subscription_link = "https://ai-sf.it/iscrizione/"
 
-    # utility dirs
-    resources_path = "resources"
-
-    st.set_page_config(page_title=parameters["title"], page_icon=os.path.join(resources_path, "page_icon.png"),
+    st.set_page_config(page_title=st.secrets.event.title,
+                       page_icon=st.secrets.resources.page_icon if "resources" in st.secrets and "page_icon" in st.secrets.resources else None,
                        initial_sidebar_state="collapsed",
                        menu_items={"About": f"[AISF Perugia]({aisf_link})",
                                    "Report a bug": os.path.join(repo_link, "issues")
@@ -45,12 +37,12 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
     logbook = helpers.Logbook.Logbook()
 
-    st.title(parameters["title"])
+    st.title(st.secrets.event.title)
     st.markdown(" ")
 
-    # maintanance mode
-    if maintanance["active"]:
-        st.info(maintanance["msg"])
+    # maintenance mode
+    if st.secrets.maintenance.active:
+        st.info(st.secrets.maintenance.message)
         return
 
 # admin access
@@ -62,7 +54,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
         with st.sidebar:
 
             st.header("Accedi")
-            admin = helpers.Admin.Admin(credentials) # access manager
+            admin = helpers.Admin.Admin(dict(st.secrets.admins)) # access manager
 
             # credentials
             username = st.text_input(label="Username", key="username_input")
@@ -71,30 +63,30 @@ def main(path: str = "./prenotazioni.csv") -> None:
             if st.form_submit_button("Login"):
 
                 # logout previous authenticated user
-                st.session_state["is_admin"] = False
+                st.session_state.is_admin = False
                 if "admin_username" in st.session_state:
-                    del st.session_state["admin_username"]
+                    del st.session_state.admin_username
 
                 if admin.auth(username, password):
-                    st.session_state["is_admin"] = True
+                    st.session_state.is_admin = True
                     st.session_state["admin_username"] = username
                     logbook.log(f"Admin \"{username}\" logged in")
                 else:
                     st.error("Credenziali errate!")
                     logbook.log(f"Login attempt with wrong credentials:   username: \"{username}\", password: \"{password}\"")
 
-            if st.session_state["is_admin"] and st.form_submit_button("Logout"):
-                username = st.session_state["admin_username"]
-                st.session_state["is_admin"] = False
-                del st.session_state["admin_username"]
+            if st.session_state.is_admin and st.form_submit_button("Logout"):
+                username = st.session_state.admin_username
+                st.session_state.is_admin = False
+                del st.session_state.admin_username
                 logbook.log(f"Admin \"{username}\" logged out")
 
 # page content
 
-    db = helpers.Database.Database(path, parameters['seats'])
+    db = helpers.Database.Database(path, st.secrets.prenotations.seats)
 
     # admin console
-    if st.session_state["is_admin"]:
+    if st.session_state.is_admin:
 
         st.header("Console di amministrazione")
         st.markdown(" ")
@@ -115,7 +107,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                            data=get_csv(df),
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.csv",
                            on_click=logbook.log,
-                           args=(f"Prenotations downloaded by admin \"{st.session_state['admin_username']}\"",),
+                           args=(f"Prenotations downloaded by admin \"{st.session_state.admin_username}\"",),
                            key="prenotations_download_button"
                           )
         st.markdown(" ")
@@ -125,9 +117,11 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(" ")
 
         # occupied seats
+        occupied = df.shape[0]
+        total = st.secrets.prenotations.seats
         st.markdown(f"**Numero di prenotazioni**: {df.shape[0]}")
-        st.markdown(f"**Posti disponibili**: {parameters['seats'] - df.shape[0]}")
-        st.markdown(f"**Capienza libera**: {1 - df.shape[0] / parameters['seats'] :.0%}")
+        st.markdown(f"**Posti disponibili**: {total - occupied}")
+        st.markdown(f"**Capienza libera**: {1 - occupied / total :.0%}")
         st.markdown(" ")
 
         # remove prenotation
@@ -160,7 +154,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                            data=logs,
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.log",
                            on_click=logbook.log,
-                           args=(f"Logs downloaded by admin \"{st.session_state['admin_username']}\"",),
+                           args=(f"Logs downloaded by admin \"{st.session_state.admin_username}\"",),
                            key="logs_download_button"
                           )
         st.markdown(" ")
@@ -172,23 +166,24 @@ def main(path: str = "./prenotazioni.csv") -> None:
     # prenotation page
     else:
 
-        st.image(os.path.join(resources_path, "local.png"), width=250)
-        st.markdown(" ")
+        if "resources" in st.secrets and "main_logo" in st.secrets.resources:
+            st.image(st.secrets.resources.main_logo, width=250)
+            st.markdown(" ")
 
         st.header("Informazioni sull'evento")
         st.markdown(" ")
 
         # event information
 
-        st.markdown(parameters["description"])
-        st.markdown(f"**Data**: {helpers.time.format(parameters['date'], '%A %d %B %Y alle %H:%M')}")
-        st.markdown(f"**Luogo**: {parameters['place']}")
+        st.markdown(st.secrets.event.description)
+        st.markdown(f"**Data**: {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')}")
+        st.markdown(f"**Luogo**: {st.secrets.event.place}")
 
         # prenotations opening and closing time
-        opening = helpers.time.parse(parameters["opening"])
-        members_opening = helpers.time.parse(parameters["members_opening"])
-        closing = helpers.time.parse(parameters["closing"])
-        members_closing = helpers.time.parse(parameters["members_closing"])
+        opening = helpers.time.parse(st.secrets.prenotations.opening)
+        members_opening = helpers.time.parse(st.secrets.prenotations.members_opening)
+        closing = helpers.time.parse(st.secrets.prenotations.closing)
+        members_closing = helpers.time.parse(st.secrets.prenotations.members_closing)
 
         fmt = "%A %d %B %Y alle %H:%M" # format to print
 
@@ -236,7 +231,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                 is_open_members = now >= members_opening and now < members_closing
 
                 # check if email is registered as association's member
-                is_member = user.email in members
+                is_member = user.email in st.secrets.members.emails
 
                 # prenotation is possible for user
                 if is_open or (is_member and is_open_members):
@@ -267,7 +262,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
                         st.success(f"La tua prenotazione è stata correttamente registrata con il codice **{id}**")
 
                         # send confirmation mail
-                        if mail_parameters["send_mails"]:
+                        if st.secrets.mail.active:
 
                             subject = "Conferma prenotazone MELT"
                             text = f"""
@@ -280,12 +275,12 @@ def main(path: str = "./prenotazioni.csv") -> None:
                             Email: {user.email}
                             Posto: {user.seat}
 
-                            Ci vediamo {helpers.time.format(parameters['date'], '%A %d %B %Y alle %H:%M')} in {parameters['place']}.
+                            Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
                             A presto!
                             """
 
                             try:
-                                postman = helpers.Postman.Postman(mail_parameters["smtp_server"], mail_parameters["sender_email"], mail_parameters["password"])
+                                postman = helpers.Postman.Postman(st.secrets.mail.smtp_server, st.secrets.mail.sender_email, st.secrets.mail.password)
                                 postman.send(user.email, subject, text)
                             except Exception:
                                 logging.error(traceback.format_exc())
