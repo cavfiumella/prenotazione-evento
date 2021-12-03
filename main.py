@@ -37,9 +37,10 @@ def main() -> None:
                                   }
                       )
 
-# page header
-
+    postman = helpers.Postman.Postman(st.secrets.mail.smtp_server, st.secrets.mail.sender_email, st.secrets.mail.password)
     logbook = helpers.Logbook.Logbook(st.secrets.resources.logbook if "resources" in st.secrets and "logbook" in st.secrets.resources else None)
+
+# page header
 
     st.title(st.secrets.event.title)
     st.markdown(" ")
@@ -84,6 +85,8 @@ def main() -> None:
                 st.session_state.is_admin = False
                 del st.session_state.admin_username
                 logbook.log(f"Admin \"{username}\" logged out.")
+
+            del admin
 
 # page content
 
@@ -283,7 +286,6 @@ def main() -> None:
                             """
 
                             try:
-                                postman = helpers.Postman.Postman(st.secrets.mail.smtp_server, st.secrets.mail.sender_email, st.secrets.mail.password)
                                 postman.send(user.email, subject, text)
                             except Exception:
                                 logging.error(traceback.format_exc())
@@ -305,6 +307,8 @@ def main() -> None:
 
             st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e [Streamlit]({st.secrets.links.streamlit_policy})")
 
+            del user
+
         ### prenotation_form ###
         st.markdown(" ")
 
@@ -316,6 +320,11 @@ def main() -> None:
         st.markdown(f"Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({st.secrets.links.repo}).")
         st.markdown(f"**Per maggiori informazioni** contattaci all'indirizzo email [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
         st.markdown(f"**[Iscriviti ad AISF Perugia]({st.secrets.links.subscription})**")
+
+    del db
+
+    del logbook
+    del postman
 
 ### main ###
 
