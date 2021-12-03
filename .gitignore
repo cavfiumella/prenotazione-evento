@@ -1,5 +1,5 @@
 # runtime files
-prenotazioni.csv
+share
 
 # secrets
 .streamlit/secrets.toml
