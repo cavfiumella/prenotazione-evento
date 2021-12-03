@@ -1,6 +1,5 @@
 
 import helpers.Database
-import helpers.User
 import helpers.Admin
 import helpers.time
 import helpers.Logbook
@@ -176,12 +175,12 @@ def main() -> None:
                         Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                         try:
-                            postman.send(user.email, subject, text)
+                            postman.send(prenotation.email, subject, text)
                         except Exception:
                             logging.error(traceback.format_exc())
                             st.error(f"""**ATTENZIONE**: si è verificato un errore inatteso \
                             e non è stato possibile inviare una mail di conferma all'indirizzo \
-                            {user.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                            {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
                             Ci scusiamo per il disagio.""")
         st.markdown(" ")
 
@@ -250,20 +249,26 @@ def main() -> None:
 
         with st.form("prenotation_form", clear_on_submit=True):
 
-            user = helpers.User.User()
+            prenotation = pd.Series({"name": "None",
+                                     "surname": "None",
+                                     "email": "None",
+                                     "seat": -1,
+                                     "agree": False,
+                                     "time": "None"
+                                   })
 
             col1, col2 = st.columns(2)
             with col1:
-                user.name = st.text_input(label="Nome", key="name_input")
+                prenotation.loc["name"] = st.text_input(label="Nome", key="name_input")
             with col2:
-                user.surname = st.text_input(label="Cognome", key="surname_input")
+                prenotation.surname = st.text_input(label="Cognome", key="surname_input")
 
             col1, col2 = st.columns(2)
             with col1:
-                user.email = st.text_input(label="Email", key="email_input")
+                prenotation.email = st.text_input(label="Email", key="email_input")
 
-            user.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
-            user.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate.")
+            prenotation.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
+            prenotation.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate.")
 
             if st.form_submit_button("Prenota"):
 
@@ -273,13 +278,13 @@ def main() -> None:
                 is_open_members = now >= members_opening and now < members_closing
 
                 # check if email is registered as association's member
-                is_member = user.email in st.secrets.members.emails
+                is_member = prenotation.email in st.secrets.members.emails
 
                 # prenotation is possible for user
                 if is_open or (is_member and is_open_members):
 
-                    user.time = helpers.time.format(helpers.time.now())
-                    id = db.register(user)
+                    prenotation.time = helpers.time.format(helpers.time.now())
+                    id = db.register(prenotation)
 
                     # registration did not go well
 
@@ -307,14 +312,14 @@ def main() -> None:
 
                             subject = "Conferma prenotazone MELT"
                             text = f"""
-                            Ciao {user.name}!
+                            Ciao {prenotation.loc['name']}!
 
                             La tua prenotazione e' stata correttamente registrata, eccone il riepilogo:
 
-                            Codice di prenotazione: {id}
-                            Nome e Cognome: {user.name} {user.surname}
-                            Email: {user.email}
-                            Posto: {user.seat}
+                            Codice di prenotazione: {prenotation.name}
+                            Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
+                            Email: {prenotation.email}
+                            Posto: {prenotation.seat}
 
                             Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
                             A presto!
@@ -324,12 +329,12 @@ def main() -> None:
                             Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                             try:
-                                postman.send(user.email, subject, text)
+                                postman.send(prenotation.email, subject, text)
                             except Exception:
                                 logging.error(traceback.format_exc())
                                 st.error(f"""**ATTENZIONE**: si è verificato un errore inatteso \
                                 e non è stato possibile inviare una mail di conferma all'indirizzo \
-                                {user.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                                {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
                                 Ci scusiamo per il disagio.""")
 
                         # no confirmation mail
@@ -344,8 +349,6 @@ def main() -> None:
                     st.error("Le prenotazioni sono chiuse.")
 
             st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e [Streamlit]({st.secrets.links.streamlit_policy})")
-
-            del user
 
         ### prenotation_form ###
         st.markdown(" ")

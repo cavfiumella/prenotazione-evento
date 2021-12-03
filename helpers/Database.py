@@ -1,6 +1,4 @@
 
-import helpers.User
-
 import pandas as pd
 import random
 import string
@@ -36,21 +34,21 @@ class Database:
             return pd.DataFrame(columns=self.__fields, index=pd.Index([], name="id"))
 
 
-    def is_valid(self, user: helpers.User.User) -> str:
+    def is_valid(self, prenotation: dict) -> str:
 
-        if not user.name.isalpha():
+        if not prenotation.loc["name"].isalpha():
             return "name"
 
-        if not user.surname.isalpha():
+        if not prenotation.surname.isalpha():
             return "surname"
 
-        if " " in user.email or "@" not in user.email or "." not in user.email.split("@")[-1]:
+        if " " in prenotation.email or "@" not in prenotation.email or "." not in prenotation.email.split("@")[-1]:
             return "email"
 
-        if user.seat not in self.get_available_seats():
+        if prenotation.seat not in self.get_available_seats():
             return "seat"
 
-        if not user.agree:
+        if not prenotation.agree:
             return "agree"
 
         return "valid"
@@ -67,9 +65,9 @@ class Database:
         return available_seats.loc[available_seats.values].index
 
 
-    def register(self, user: helpers.User.User) -> str:
+    def register(self, prenotation: dict) -> str:
 
-        field = self.is_valid(user)
+        field = self.is_valid(prenotation)
 
         if field != "valid":
             return field
@@ -80,13 +78,13 @@ class Database:
         while id in df.index.tolist():
             id = self.__generate_id()
 
-        prenotation = user.get_dict()
+        prenotation.name = id
 
         # check if already registered
-        if df.loc[lambda x: x.name == prenotation["name"]].loc[lambda x: x.surname == prenotation["surname"]].shape[0] != 0:
+        if df.loc[lambda x: x.name == prenotation.loc["name"]].loc[lambda x: x.surname == prenotation.surname].shape[0] != 0:
             return "already"
 
-        df = df.append(pd.Series(prenotation, name=id))
+        df = df.append(prenotation)
         df = df.sort_values("seat")
         self.__save_df(df)
 
