@@ -30,3 +30,5 @@ class Postman:
         with smtplib.SMTP_SSL(self.__smtp_server, context=ssl.create_default_context()) as server:
             server.login(self.__sender_email, self.__password)
             server.send_message(msg)
+
+### Postman ###

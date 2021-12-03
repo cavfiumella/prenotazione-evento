@@ -9,7 +9,7 @@ import os
 
 class Database:
 
-    """Manages prenotations file"""
+    """Manages prenotations file."""
 
     __n_seats: int = -1
     __path: str = "prenotations.csv"
