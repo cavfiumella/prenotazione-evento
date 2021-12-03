@@ -12,6 +12,20 @@ import os
 import sys
 import traceback
 import logging
+import locale
+
+
+# timestamps locale
+LOCALE = ("it_IT", "UTF-8")
+
+try:
+    helpers.time.set_locale(LOCALE)
+except Exception:
+    logging.error(f"unable to set locale \"{'.'.join(LOCALE)}\"")
+    logging.error(traceback.format_exc())
+    LOCALE = locale.getlocale(locale.LC_TIME)
+    if LOCALE[0] == None: LOCALE = locale.getlocale() # LC_TIME not set
+    logging.info(f"current locale is \"{'.'.join(LOCALE)}\"")
 
 
 def main(path: str = "./prenotazioni.csv") -> None:
