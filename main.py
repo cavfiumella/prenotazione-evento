@@ -336,6 +336,9 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                                 e non è stato possibile inviare una mail di conferma all'indirizzo \
                                 {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
                                 Ci scusiamo per il disagio.""")
+                            else:
+                                st.info(f"Ti abbiamo inviato una mail di riepilogo all'indirizzo **{prenotation.email}**. \
+                                Se non la trovi controlla la cartella della posta indesiderata.")
 
                         # no confirmation mail
                         else:
