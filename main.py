@@ -74,16 +74,16 @@ def main() -> None:
                 if admin.auth(username, password):
                     st.session_state.is_admin = True
                     st.session_state["admin_username"] = username
-                    logbook.log(f"Admin \"{username}\" logged in")
+                    logbook.log(f"Admin \"{username}\" logged in.")
                 else:
                     st.error("Credenziali errate!")
-                    logbook.log(f"Login attempt with wrong credentials:   username: \"{username}\", password: \"{password}\"")
+                    logbook.log(f"Login attempt with wrong credentials:   username: \"{username}\", password: \"{password}\".")
 
             if st.session_state.is_admin and st.form_submit_button("Logout"):
                 username = st.session_state.admin_username
                 st.session_state.is_admin = False
                 del st.session_state.admin_username
-                logbook.log(f"Admin \"{username}\" logged out")
+                logbook.log(f"Admin \"{username}\" logged out.")
 
 # page content
 
@@ -113,35 +113,33 @@ def main() -> None:
                            data=get_csv(df),
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.csv",
                            on_click=logbook.log,
-                           args=(f"Prenotations downloaded by admin \"{st.session_state.admin_username}\"",),
+                           args=(f"Prenotations downloaded by admin \"{st.session_state.admin_username}\".",),
                            key="prenotations_download_button"
                           )
+        st.markdown(" ")
+
+        # occupied seats
+        occupied = df.shape[0]
+        total = st.secrets.prenotations.seats
+        st.markdown(f"**Numero di prenotazioni**: {occupied} / {total} ({occupied / total : .0%}).")
         st.markdown(" ")
 
         # print prenotations
         st.dataframe(df)
         st.markdown(" ")
 
-        # occupied seats
-        occupied = df.shape[0]
-        total = st.secrets.prenotations.seats
-        st.markdown(f"**Numero di prenotazioni**: {df.shape[0]}")
-        st.markdown(f"**Posti disponibili**: {total - occupied}")
-        st.markdown(f"**Capienza libera**: {1 - occupied / total :.0%}")
-        st.markdown(" ")
-
         # remove prenotation
         with st.form("remove_form"):
 
             st.markdown("**Rimuovi prenotazione**")
-            st.markdown("**ATTENZIONE**: la rimozione di una prenotazione non è reversibile")
+            st.markdown("La rimozione di una prenotazione è un'operazione **irreversibile**.")
 
             ids = db.get_df().index.tolist()
             id = st.selectbox(label="ID prenotazione", options=ids, key="remove_select")
 
             if st.form_submit_button("Rimuovi"):
                 if id == None:
-                    st.error("Impossibile rimuovere la prenotazione.")
+                    st.error("Non ci sono prenotazioni da rimuovere.")
                 else:
                     seat = db.get_df().loc[id].seat
                     db.remove(id)
@@ -160,7 +158,7 @@ def main() -> None:
                            data=logs,
                            file_name=f"{helpers.time.format(helpers.time.now(), format='%Y-%m-%d_%H.%M.%S')}.log",
                            on_click=logbook.log,
-                           args=(f"Logs downloaded by admin \"{st.session_state.admin_username}\"",),
+                           args=(f"Logs downloaded by admin \"{st.session_state.admin_username}\".",),
                            key="logs_download_button"
                           )
         st.markdown(" ")
@@ -227,7 +225,7 @@ def main() -> None:
                 user.email = st.text_input(label="Email", key="email_input")
 
             user.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
-            user.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate")
+            user.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali secondo le informative sotto riportate.")
 
             if st.form_submit_button("Prenota"):
 
@@ -248,24 +246,23 @@ def main() -> None:
                     # registration did not go well
 
                     if id == "name" or id == "surname":
-                        st.error("Nome e cognome non sono validi")
+                        st.error("Nome e cognome non sono validi.")
 
                     elif id == "email":
-                        st.error("Inserire un indirizzo email valido")
+                        st.error("Inserire un indirizzo email valido.")
 
                     elif id == "seat":
-                        st.error("Il posto scelto è già occupato")
-                        st.info("Ricarica la pagina per aggiornare la lista dei posti disponibile")
+                        st.error("Il posto scelto è già occupato.")
+                        st.info("Ricarica la pagina per aggiornare la lista dei posti disponibile.")
 
                     elif id == "agree":
-                        st.error("Il consenso al trattamento dei dati personali è obbligatorio")
+                        st.error("Il consenso al trattamento dei dati personali è obbligatorio.")
 
                     elif id == "already":
                         st.error(f"E' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
 
                     # prenotation registered
                     else:
-                        st.success(f"La tua prenotazione è stata correttamente registrata con il codice **{id}**")
 
                         # send confirmation mail
                         if st.secrets.mail.active:
@@ -297,12 +294,14 @@ def main() -> None:
 
                         # no confirmation mail
                         else:
-                            st.info("**Conserva il codice della prenotazione** scritto sopra.")
+                            st.info("**Conserva il codice della prenotazione**.")
+
+                        st.success(f"La tua prenotazione è stata correttamente registrata con il codice **{id}**.")
 
 
                 # prenotation closed
                 else:
-                    st.error("Le prenotazioni sono attualmente chiuse.")
+                    st.error("Le prenotazioni sono chiuse.")
 
             st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e [Streamlit]({st.secrets.links.streamlit_policy})")
 
