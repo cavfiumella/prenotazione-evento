@@ -39,13 +39,9 @@ def main(path: str = "./prenotazioni.csv") -> None:
                                   }
                       )
 
-    # init objects
-    db = helpers.Database.Database(path, parameters['seats'])
-    admin = helpers.Admin.Admin(credentials)
-    user = helpers.User.User()
-    logbook = helpers.Logbook.Logbook()
+# page header
 
-# main page
+    logbook = helpers.Logbook.Logbook()
 
     st.title(parameters["title"])
     st.markdown(" ")
@@ -55,15 +51,16 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.info(maintanance["msg"])
         return
 
-    # admin permissions
+# admin access
+
     if "is_admin" not in st.session_state:
         st.session_state["is_admin"] = False
 
-    # admin login
     with st.form("admin_login", clear_on_submit=True):
         with st.sidebar:
 
             st.header("Accedi")
+            admin = helpers.Admin.Admin(credentials) # access manager
 
             # credentials
             username = st.text_input(label="Username", key="username_input")
@@ -84,7 +81,11 @@ def main(path: str = "./prenotazioni.csv") -> None:
                 del st.session_state["admin_username"]
                 logbook.log(f"Admin \"{username}\" logged out")
 
-    # admin page
+# page content
+
+    db = helpers.Database.Database(path, parameters['seats'])
+
+    # admin console
     if st.session_state["is_admin"]:
 
         st.header("Console di amministrazione")
@@ -160,7 +161,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.text(logs)
         st.markdown(" ")
 
-    # non-admin user page
+    # prenotation page
     else:
 
         st.image(os.path.join(resources_path, "local.png"), width=250)
@@ -203,6 +204,8 @@ def main(path: str = "./prenotazioni.csv") -> None:
         st.markdown(" ")
 
         with st.form("prenotation_form", clear_on_submit=True):
+
+            user = helpers.User.User()
 
             col1, col2 = st.columns(2)
             with col1:
