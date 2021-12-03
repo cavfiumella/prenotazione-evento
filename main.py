@@ -8,7 +8,6 @@ import helpers.Postman
 
 import pandas as pd
 import streamlit as st
-import os
 import sys
 import traceback
 import logging
@@ -30,20 +29,11 @@ except Exception:
 
 def main() -> None:
 
-
-    # links
-    aisf_link = "http://ai-sf.it/perugia/"
-    repo_link = "https://github.com/cavfiumella/prenotazione-evento"
-    aisf_email = "perugia@ai-sf.it"
-    aisf_policy = "https://ai-sf.it/Informativa_Privacy_AISF.pdf"
-    streamlit_policy = "https://streamlit.io/privacy-policy"
-    subscription_link = "https://ai-sf.it/iscrizione/"
-
     st.set_page_config(page_title=st.secrets.event.title,
                        page_icon=st.secrets.resources.page_icon if "resources" in st.secrets and "page_icon" in st.secrets.resources else None,
                        initial_sidebar_state="collapsed",
-                       menu_items={"About": f"[AISF Perugia]({aisf_link})",
-                                   "Report a bug": os.path.join(repo_link, "issues")
+                       menu_items={"About": f"[AISF Perugia]({st.secrets.links.local_aisf})",
+                                   "Report a bug": st.secrets.links.bug
                                   }
                       )
 
@@ -271,7 +261,7 @@ def main() -> None:
                         st.error("Il consenso al trattamento dei dati personali è obbligatorio")
 
                     elif id == "already":
-                        st.error(f"E' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{aisf_email}](mailto:{aisf_email}).")
+                        st.error(f"E' già presente una prenotazione con questo nome. Per recuperare il codice di prenotazione contatta [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
 
                     # prenotation registered
                     else:
@@ -314,7 +304,7 @@ def main() -> None:
                 else:
                     st.error("Le prenotazioni sono attualmente chiuse.")
 
-            st.markdown(f"**Informative sulla privacy**: [AISF]({aisf_policy}) e [Streamlit]({streamlit_policy})")
+            st.markdown(f"**Informative sulla privacy**: [AISF]({st.secrets.links.aisf_policy}) e [Streamlit]({st.secrets.links.streamlit_policy})")
 
         ### prenotation_form ###
         st.markdown(" ")
@@ -323,10 +313,10 @@ def main() -> None:
         st.header("Informazioni sulla pagina")
         st.markdown(" ")
 
-        st.markdown(f"Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({aisf_link}).")
-        st.markdown(f"Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({repo_link}).")
-        st.markdown(f"**Per maggiori informazioni** contattaci all'indirizzo email [{aisf_email}](mailto:{aisf_email}).")
-        st.markdown(f"**[Iscriviti ad AISF Perugia]({subscription_link})**")
+        st.markdown(f"Questa pagina è stata realizzata dal [comitato locale AISF di Perugia]({st.secrets.links.local_aisf}).")
+        st.markdown(f"Il **codice sorgente** è _open source_ e liberamente consultabile [qui]({st.secrets.links.repo}).")
+        st.markdown(f"**Per maggiori informazioni** contattaci all'indirizzo email [{st.secrets.contacts.local_aisf}](mailto:{st.secrets.contacts.local_aisf}).")
+        st.markdown(f"**[Iscriviti ad AISF Perugia]({st.secrets.links.subscription})**")
 
 ### main ###
 
