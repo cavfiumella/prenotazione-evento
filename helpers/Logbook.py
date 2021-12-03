@@ -1,8 +1,7 @@
 
-# logbook of admin operations
+"""Logbook of admins operations."""
 
-
-from . import time as helpers_time
+import helpers.time
 
 
 class Logbook:
@@ -15,7 +14,7 @@ class Logbook:
 
 
     def log(self, s: str):
-        s = helpers_time.format(helpers_time.now()) + ' - ' + s + '\n'
+        s = helpers.time.format(helpers.time.now()) + ' - ' + s + '\n'
         with open(self._path, mode='a') as file:
             file.write(s)
 
