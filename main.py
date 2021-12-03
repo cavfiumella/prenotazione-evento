@@ -4,6 +4,7 @@ import helpers.User
 import helpers.Admin
 import helpers.time
 import helpers.Logbook
+import helpers.Postman
 
 import pandas as pd
 import streamlit as st
@@ -20,6 +21,7 @@ def main(path: str = "./prenotazioni.csv") -> None:
     maintanance = dict(st.secrets["maintanance"])
     credentials = dict(st.secrets["credentials"])
     members = st.secrets["members"]["emails"]
+    mail_parameters = dict(st.secrets["mail"])
 
     # links
     aisf_link = "http://ai-sf.it/perugia/"
@@ -262,8 +264,40 @@ def main(path: str = "./prenotazioni.csv") -> None:
 
                     # prenotation registered
                     else:
-                        st.info(f"**ATTENZIONE** - conserva il seguente codice di prenotazione: **{id}**")
-                        st.success("Prenotazione correttamente registrata")
+                        st.success(f"La tua prenotazione è stata correttamente registrata con il codice **{id}**")
+
+                        # send confirmation mail
+                        if mail_parameters["send_mails"]:
+
+                            subject = "Conferma prenotazone MELT"
+                            text = f"""
+                            Ciao {user.name}!
+
+                            La tua prenotazione e' stata correttamente registrata, eccone il riepilogo:
+
+                            Codice di prenotazione: {id}
+                            Nome e Cognome: {user.name} {user.surname}
+                            Email: {user.email}
+                            Posto: {user.seat}
+
+                            Ci vediamo {helpers.time.format(parameters['date'], '%A %d %B %Y alle %H:%M')} in {parameters['place']}.
+                            A presto!
+                            """
+
+                            try:
+                                postman = helpers.Postman.Postman(mail_parameters["smtp_server"], mail_parameters["sender_email"], mail_parameters["password"])
+                                postman.send(user.email, subject, text)
+                            except Exception:
+                                logging.error(traceback.format_exc())
+                                st.error(f"""**ATTENZIONE**: si è verificato un errore inatteso \
+                                e non è stato possibile inviare una mail di conferma all'indirizzo \
+                                {user.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                                Ci scusiamo per il disagio.""")
+
+                        # no confirmation mail
+                        else:
+                            st.info("**Conserva il codice della prenotazione** scritto sopra.")
+
 
                 # prenotation closed
                 else:
