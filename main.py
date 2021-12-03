@@ -141,13 +141,48 @@ def main() -> None:
             id = st.selectbox(label="ID prenotazione", options=ids, key="remove_select")
 
             if st.form_submit_button("Rimuovi"):
+
                 if id == None:
                     st.error("Non ci sono prenotazioni da rimuovere.")
+
                 else:
-                    seat = db.get_df().loc[id].seat
+
+                    # ATTENTION: prenotation.name is the name of the pandas.Series (i.e. the ID) not the name field value
+                    prenotation = db.get_df().loc[id]
+
                     db.remove(id)
-                    st.success(f"Prenotazione **{id}** al posto **{seat}** correttamente eliminata.")
-                    logbook.log(f"Prenotation {id} on seat {seat} removed.")
+                    st.success(f"Prenotazione **{prenotation.name}** al posto **{prenotation.seat}** correttamente eliminata.")
+                    logbook.log(f"Prenotation {prenotation.name} on seat {prenotation.seat} removed.")
+
+                    # send notification mail
+                    if st.secrets.mail.active:
+
+                        subject = "Cancellazione prenotazone MELT"
+                        text = f"""
+                        Ciao {prenotation.loc["name"]}!
+
+                        La seguente prenotazione è stata cancellata:
+
+                        Codice di prenotazione: {prenotation.name}
+                        Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
+                        Email: {prenotation.email}
+                        Posto: {prenotation.seat}
+
+                        Speriamo di rivederti in futuro!
+                        Alla prossima!
+
+                        ______________________________
+                        {st.secrets.mail.signature}
+                        Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
+
+                        try:
+                            postman.send(user.email, subject, text)
+                        except Exception:
+                            logging.error(traceback.format_exc())
+                            st.error(f"""**ATTENZIONE**: si è verificato un errore inatteso \
+                            e non è stato possibile inviare una mail di conferma all'indirizzo \
+                            {user.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                            Ci scusiamo per il disagio.""")
         st.markdown(" ")
 
         # logbook
@@ -283,7 +318,10 @@ def main() -> None:
 
                             Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
                             A presto!
-                            """
+
+                            ______________________________
+                            {st.secrets.mail.signature}
+                            Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
                             try:
                                 postman.send(user.email, subject, text)

@@ -57,6 +57,7 @@ active = true
 smtp_server = "smtp.gmail.com"
 sender_email = "sender@gmail.com"
 password = "sender_email_password"
+signature = "AISF Perugia"
 
 
 [resources]
