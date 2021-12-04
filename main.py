@@ -326,6 +326,9 @@ Nome e Cognome: {prenotation.loc['name']} {prenotation.surname}
 Email: {prenotation.email}
 Posto: {prenotation.seat}
 
+Se decidessi di non partecipare all'evento invia una mail a {st.secrets.contacts.local_aisf} per far cancellare \
+la tua prenotazione.
+
 Ci vediamo {helpers.time.format(st.secrets.event.date, '%A %d %B %Y alle %H:%M')} in {st.secrets.event.place}.
 A presto!
 
