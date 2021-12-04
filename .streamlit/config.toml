@@ -1,0 +1,15 @@
+[client]
+
+# do not show uncaught exceptions details in browser
+showErrorDetails = false
+
+
+[server]
+
+# rerun script when changed
+runOnSave = true
+
+
+[browser]
+
+gatherUsageStats = false
