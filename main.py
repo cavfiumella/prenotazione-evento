@@ -342,7 +342,7 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
                                 logging.error(traceback.format_exc())
                                 st.error(f"**ATTENZIONE**: si è verificato un errore inatteso \
                                            e non è stato possibile inviare una mail di conferma all'indirizzo \
-                                           {prenotation.email}. Si prega di **conservare il codice della prenotazione** scritto sopra. \
+                                           {prenotation.email}. Si prega di **conservare il codice della prenotazione**. \
                                            Ci scusiamo per il disagio."
                                         )
                             else:
