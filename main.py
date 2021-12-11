@@ -267,6 +267,9 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
             with col1:
                 prenotation.email = st.text_input(label="Email", key="email_input").strip().lower()
 
+            st.markdown("Se sei un  **membro AISF** utilizza la mail con la quale ti sei iscritto per essere riconosciuto.")
+            st.markdown(" ")
+
             prenotation.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
             prenotation.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali \
                                                     secondo le informative sotto riportate."
