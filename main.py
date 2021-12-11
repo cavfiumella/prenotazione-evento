@@ -259,13 +259,13 @@ Contattaci all'indirizzo: {st.secrets.contacts.local_aisf}"""
 
             col1, col2 = st.columns(2)
             with col1:
-                prenotation.loc["name"] = st.text_input(label="Nome", key="name_input")
+                prenotation.loc["name"] = st.text_input(label="Nome", key="name_input").strip()
             with col2:
-                prenotation.surname = st.text_input(label="Cognome", key="surname_input")
+                prenotation.surname = st.text_input(label="Cognome", key="surname_input").strip()
 
             col1, col2 = st.columns(2)
             with col1:
-                prenotation.email = st.text_input(label="Email", key="email_input")
+                prenotation.email = st.text_input(label="Email", key="email_input").strip().lower()
 
             prenotation.seat = st.selectbox(label="Posto", options=db.get_available_seats(), key="seat_select")
             prenotation.agree = st.checkbox(label=f"Acconsento al trattamento dei dati personali \
