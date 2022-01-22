@@ -1,3 +1,4 @@
+[![CodeQL](https://github.com/cavfiumella/prenotazione-evento/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/cavfiumella/prenotazione-evento/actions/workflows/codeql-analysis.yml)
 
 # Prenotazione evento
 ## AISF - comitato locale di Perugia
